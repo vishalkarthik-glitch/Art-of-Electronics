@@ -3,172 +3,275 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Live V–I Characteristic Curve (LED) & MATLAB Plotter</title>
+  <title>de:volt // LED V–I Characteristic Curve Analyzer</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
   <style>
-    body { font-family: 'Inter', sans-serif; }
-    canvas { touch-action: none; display: block; width: 100%; height: 100%; }
+    :root {
+      --bg-carbon: #08090B;
+      --bg-obsidian: #0E1014;
+      --volt-amber: #F59E0B;
+      --volt-gold: #FBBF24;
+      --volt-acid: #D9F99D;
+      --glass-surface: rgba(14, 16, 20, 0.72);
+      --glass-border: rgba(245, 158, 11, 0.22);
+    }
+
+    body {
+      font-family: 'Space Grotesk', sans-serif;
+      background-color: var(--bg-carbon);
+      color: #F8FAFC;
+      overflow-x: hidden;
+      background-image:
+        radial-gradient(circle at 12% 10%, rgba(245, 158, 11, 0.11), transparent 38%),
+        radial-gradient(circle at 88% 85%, rgba(217, 249, 157, 0.06), transparent 42%),
+        linear-gradient(rgba(245, 158, 11, 0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(245, 158, 11, 0.04) 1px, transparent 1px);
+      background-size: 100% 100%, 100% 100%, 32px 32px, 32px 32px;
+    }
+
+    .font-mono-tech {
+      font-family: 'JetBrains Mono', monospace;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .devolt-glass {
+      background: var(--glass-surface);
+      backdrop-filter: blur(22px) saturate(160%);
+      -webkit-backdrop-filter: blur(22px) saturate(160%);
+      border: 1px solid var(--glass-border);
+      box-shadow:
+        inset 0 1px 0 0 rgba(251, 191, 36, 0.14),
+        0 18px 40px -15px rgba(0, 0, 0, 0.85);
+    }
+
+    .devolt-card {
+      background: linear-gradient(180deg, rgba(20, 23, 29, 0.78) 0%, rgba(11, 13, 17, 0.85) 100%);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.06);
+      transition: border-color 0.2s ease, transform 0.2s ease;
+    }
+
+    .devolt-card:hover {
+      border-color: rgba(245, 158, 11, 0.38);
+    }
+
+    .btn-volt {
+      background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%);
+      color: #08090B;
+      font-weight: 700;
+      box-shadow: 0 0 20px rgba(245, 158, 11, 0.25);
+      transition: all 0.18s ease;
+    }
+
+    .btn-volt:hover {
+      background: linear-gradient(135deg, #FBBF24 0%, #F59E0B 100%);
+      box-shadow: 0 0 26px rgba(251, 191, 36, 0.42);
+    }
+
+    .btn-ghost {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: #E2E8F0;
+      transition: all 0.18s ease;
+    }
+
+    .btn-ghost:hover {
+      border-color: rgba(245, 158, 11, 0.45);
+      background: rgba(245, 158, 11, 0.08);
+      color: #FBBF24;
+    }
+
+    canvas {
+      touch-action: none;
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
   </style>
 </head>
-<body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col antialiased">
+<body class="min-h-screen flex flex-col antialiased selection:bg-amber-500 selection:text-black">
 
-  <!-- RESPONSIVE TOP BAR -->
-  <header class="bg-white border-b border-slate-200 sticky top-0 z-30 shadow-sm">
-    <div class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-2.5 sm:h-16 flex flex-wrap sm:flex-nowrap items-center justify-between gap-2">
-      <div class="flex items-center space-x-2.5 sm:space-x-3 min-w-0">
-        <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-blue-600 flex items-center justify-center text-white shadow-sm shrink-0">
-          <svg class="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+  <!-- TOP NAVIGATION BAR -->
+  <header class="devolt-glass sticky top-0 z-30 border-x-0 border-t-0">
+    <div class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-3 flex flex-wrap sm:flex-nowrap items-center justify-between gap-3">
+      <div class="flex items-center space-x-3 min-w-0">
+        <div class="w-10 h-10 rounded-xl bg-amber-500/15 border border-amber-400/40 flex items-center justify-center text-amber-400 shrink-0 shadow-[0_0_20px_rgba(245,158,11,0.2)]">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M13 10V3L4 14h7v7l9-11h-7z" />
           </svg>
         </div>
         <div class="truncate">
-          <h1 class="font-bold text-slate-900 text-sm sm:text-lg leading-tight truncate">LED V–I Curve Analyzer</h1>
-          <p class="text-[11px] sm:text-xs text-slate-500 truncate">Desktop & Mobile OTG Serial + MATLAB</p>
+          <div class="flex items-center gap-2">
+            <span class="font-mono-tech text-xs font-bold tracking-widest uppercase px-2 py-0.5 rounded bg-amber-500/15 text-amber-400 border border-amber-500/30">de:volt</span>
+            <h1 class="font-bold text-slate-100 text-sm sm:text-lg tracking-tight truncate">LED V–I Characteristic Analyzer</h1>
+          </div>
+          <p class="text-[11px] sm:text-xs text-slate-400 font-mono-tech truncate mt-0.5">
+            PRADEEP S [2026303080] &bull; VISHAL KARTHIK R P [2026303060]
+          </p>
         </div>
       </div>
 
-      <div class="flex items-center gap-2 ml-auto">
-        <div id="statusBadge" class="inline-flex items-center px-2.5 py-1 rounded-full text-[11px] sm:text-xs font-semibold bg-amber-50 text-amber-800 border border-amber-200 whitespace-nowrap">
-          <span id="statusDot" class="w-2 h-2 rounded-full bg-amber-500 mr-1.5 shrink-0"></span>
-          <span id="statusText">No readings taken so far</span>
+      <div class="flex items-center gap-2.5 ml-auto">
+        <div id="statusBadge" class="inline-flex items-center px-3 py-1.5 rounded-lg text-[11px] sm:text-xs font-mono-tech font-medium bg-amber-500/10 text-amber-300 border border-amber-500/30 whitespace-nowrap">
+          <span id="statusDot" class="w-2 h-2 rounded-full bg-amber-400 mr-2 shrink-0"></span>
+          <span id="statusText">NO READINGS TAKEN</span>
         </div>
 
-        <button id="btnConnect" onclick="toggleConnect()" class="inline-flex items-center px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white font-medium text-xs sm:text-sm transition shadow-sm whitespace-nowrap">
+        <button id="btnConnect" onclick="toggleConnect()" class="btn-volt inline-flex items-center px-3.5 sm:px-4 py-2 rounded-lg text-xs sm:text-sm tracking-tight cursor-pointer whitespace-nowrap">
           <span id="btnConnectText">Connect OTG / USB</span>
         </button>
       </div>
     </div>
   </header>
 
-  <!-- MAIN CONTENT -->
-  <main class="flex-1 max-w-7xl w-full mx-auto px-3 sm:px-6 lg:px-8 py-4 sm:py-6 lg:py-8 flex flex-col space-y-4 sm:space-y-6">
+  <!-- MAIN WORKSPACE -->
+  <main class="flex-1 max-w-7xl w-full mx-auto px-3 sm:px-6 lg:px-8 py-5 sm:py-7 flex flex-col space-y-5">
 
-    <!-- NO READINGS & MOBILE OTG GUIDE BANNER -->
-    <div id="noReadingsBanner" class="bg-white border border-slate-200 rounded-2xl p-3.5 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-sm">
-      <div class="flex items-start sm:items-center space-x-3">
-        <span class="w-2.5 h-2.5 rounded-full bg-slate-400 mt-1.5 sm:mt-0 shrink-0"></span>
+    <!-- CONNECTION / STANDBY BANNER -->
+    <div id="noReadingsBanner" class="devolt-glass rounded-2xl p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div class="flex items-start sm:items-center space-x-3.5">
+        <div class="w-2.5 h-2.5 rounded-full bg-amber-400 mt-1.5 sm:mt-0 shrink-0 shadow-[0_0_10px_#F59E0B]"></div>
         <div>
-          <p class="text-sm font-semibold text-slate-900">No readings taken so far</p>
-          <p class="text-xs text-slate-500 mt-0.5">
-            On <strong>Android</strong>, plug Arduino into your phone via an <strong>OTG adapter</strong>, open in <strong>Chrome/Edge</strong>, and tap <strong>Connect OTG / USB</strong>. Output format: <span class="font-mono text-slate-700">V_LED,I_mA</span> at 9600 baud.
+          <p class="text-sm font-bold text-amber-300 tracking-wide uppercase font-mono-tech">Standby // No Readings Taken So Far</p>
+          <p class="text-xs text-slate-300 mt-1 leading-relaxed">
+            Connect via <strong class="text-white">USB / Android OTG</strong> in <strong class="text-white">Chrome or Edge</strong> and select <strong class="text-amber-300">Connect OTG / USB</strong>. Expected serial stream: <span class="font-mono-tech text-lime-300 bg-black/50 px-1.5 py-0.5 rounded border border-white/10">V_LED,I_mA</span> @ 9600 baud.
           </p>
         </div>
       </div>
       <div class="flex items-center gap-2 shrink-0">
-        <button onclick="openOtgHelp()" class="px-3 py-2 rounded-lg border border-slate-200 hover:bg-slate-50 text-slate-700 text-xs font-semibold transition">
-          OTG Tips
+        <button onclick="openOtgHelp()" class="btn-ghost px-3.5 py-2 rounded-lg text-xs font-semibold cursor-pointer">
+          OTG Setup
         </button>
-        <button onclick="toggleConnect()" class="px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold transition">
+        <button onclick="toggleConnect()" class="btn-volt px-4 py-2 rounded-lg text-xs cursor-pointer">
           Connect
         </button>
       </div>
     </div>
 
-    <!-- RESPONSIVE METRIC CARDS -->
+    <!-- TELEMETRY KPI CARDS -->
     <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
-      <div class="bg-white p-3.5 sm:p-4 rounded-xl border border-slate-200 shadow-sm">
-        <div class="text-[11px] font-medium text-slate-500 uppercase tracking-wider mb-1">LED Voltage (V_LED)</div>
-        <div class="flex items-baseline space-x-1">
-          <span id="valVoltage" class="text-xl sm:text-3xl font-extrabold text-slate-900">--</span>
-          <span class="text-xs sm:text-sm font-semibold text-slate-500">V</span>
+      <div class="devolt-card p-4 rounded-xl">
+        <div class="text-[11px] font-mono-tech text-slate-400 uppercase tracking-wider mb-1">LED Voltage (V_LED)</div>
+        <div class="flex items-baseline space-x-1.5">
+          <span id="valVoltage" class="font-mono-tech text-2xl sm:text-3xl font-bold text-slate-100">--</span>
+          <span class="font-mono-tech text-xs sm:text-sm font-semibold text-amber-400">V</span>
         </div>
       </div>
 
-      <div class="bg-white p-3.5 sm:p-4 rounded-xl border border-slate-200 shadow-sm">
-        <div class="text-[11px] font-medium text-slate-500 uppercase tracking-wider mb-1">Current (I)</div>
-        <div class="flex items-baseline space-x-1">
-          <span id="valCurrent" class="text-xl sm:text-3xl font-extrabold text-blue-600">--</span>
-          <span class="text-xs sm:text-sm font-semibold text-blue-600">mA</span>
+      <div class="devolt-card p-4 rounded-xl">
+        <div class="text-[11px] font-mono-tech text-slate-400 uppercase tracking-wider mb-1">Forward Current (I)</div>
+        <div class="flex items-baseline space-x-1.5">
+          <span id="valCurrent" class="font-mono-tech text-2xl sm:text-3xl font-bold text-amber-400">--</span>
+          <span class="font-mono-tech text-xs sm:text-sm font-semibold text-amber-400">mA</span>
         </div>
       </div>
 
-      <div class="bg-white p-3.5 sm:p-4 rounded-xl border border-slate-200 shadow-sm">
-        <div class="text-[11px] font-medium text-slate-500 uppercase tracking-wider mb-1">Total Readings</div>
-        <div class="flex items-baseline space-x-1">
-          <span id="valCount" class="text-xl sm:text-3xl font-extrabold text-slate-900">0</span>
-          <span class="text-xs sm:text-sm font-semibold text-slate-500">pts</span>
+      <div class="devolt-card p-4 rounded-xl">
+        <div class="text-[11px] font-mono-tech text-slate-400 uppercase tracking-wider mb-1">Sample Count</div>
+        <div class="flex items-baseline space-x-1.5">
+          <span id="valCount" class="font-mono-tech text-2xl sm:text-3xl font-bold text-slate-100">0</span>
+          <span class="font-mono-tech text-xs sm:text-sm font-semibold text-slate-400">pts</span>
         </div>
       </div>
 
-      <div class="bg-white p-3.5 sm:p-4 rounded-xl border border-slate-200 shadow-sm">
-        <div class="text-[11px] font-medium text-slate-500 uppercase tracking-wider mb-1">Est. Turn-On Knee</div>
-        <div class="flex items-baseline space-x-1">
-          <span id="valKnee" class="text-xl sm:text-3xl font-extrabold text-emerald-600">--</span>
-          <span class="text-xs sm:text-sm font-semibold text-emerald-600">V</span>
+      <div class="devolt-card p-4 rounded-xl">
+        <div class="text-[11px] font-mono-tech text-slate-400 uppercase tracking-wider mb-1">Turn-On Knee (V_th)</div>
+        <div class="flex items-baseline space-x-1.5">
+          <span id="valKnee" class="font-mono-tech text-2xl sm:text-3xl font-bold text-lime-300">--</span>
+          <span class="font-mono-tech text-xs sm:text-sm font-semibold text-lime-300">V</span>
         </div>
       </div>
     </div>
 
-    <!-- GRAPH CARD -->
-    <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-3.5 sm:p-6 flex flex-col">
-      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-3 sm:mb-4">
+    <!-- OSCILLOSCOPE / GRAPH PANEL -->
+    <div class="devolt-glass rounded-2xl p-4 sm:p-6 flex flex-col">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
         <div>
-          <h2 class="text-base sm:text-lg font-bold text-slate-900">Live V–I Characteristic Curve (LED)</h2>
-          <p id="graphSubtitle" class="text-xs text-slate-500">No readings taken so far — waiting for Arduino serial data</p>
+          <div class="flex items-center gap-2">
+            <span class="w-2 h-2 rounded-full bg-amber-400"></span>
+            <h2 class="text-base sm:text-lg font-bold text-white tracking-tight">Live V–I Characteristic Curve (LED)</h2>
+          </div>
+          <p id="graphSubtitle" class="text-xs font-mono-tech text-slate-400 mt-0.5">No readings taken so far — awaiting hardware telemetry</p>
         </div>
 
         <div class="flex flex-wrap items-center gap-2">
-          <button onclick="openMatlabModal()" class="flex-1 sm:flex-initial px-3 py-2 sm:py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white font-medium text-xs transition shadow-sm">
-            MATLAB Script (.m)
+          <button onclick="openMatlabModal()" class="btn-ghost flex-1 sm:flex-initial px-3.5 py-2 sm:py-1.5 rounded-lg text-xs font-mono-tech font-semibold cursor-pointer">
+            MATLAB (.m)
           </button>
-          <button onclick="exportCSV()" class="flex-1 sm:flex-initial px-3 py-2 sm:py-1.5 rounded-lg border border-slate-200 bg-slate-50 hover:bg-slate-100 text-slate-700 font-medium text-xs transition">
+          <button onclick="exportCSV()" class="btn-ghost flex-1 sm:flex-initial px-3.5 py-2 sm:py-1.5 rounded-lg text-xs font-mono-tech font-semibold cursor-pointer">
             Export CSV
           </button>
-          <button onclick="clearData()" class="flex-1 sm:flex-initial px-3 py-2 sm:py-1.5 rounded-lg border border-slate-200 bg-slate-50 hover:bg-slate-100 text-slate-700 font-medium text-xs transition">
-            Clear
+          <button onclick="clearData()" class="btn-ghost flex-1 sm:flex-initial px-3.5 py-2 sm:py-1.5 rounded-lg text-xs font-mono-tech font-semibold cursor-pointer">
+            Clear Trace
           </button>
         </div>
       </div>
 
-      <div id="canvasWrapper" class="relative w-full h-[290px] sm:h-[380px] lg:h-[430px] bg-white rounded-xl border border-slate-200 overflow-hidden">
+      <div id="canvasWrapper" class="relative w-full h-[300px] sm:h-[390px] lg:h-[440px] bg-[#0B0D12] rounded-xl border border-amber-500/20 overflow-hidden shadow-inner">
         <canvas id="viCanvas"></canvas>
-        <div id="canvasTooltip" class="pointer-events-none absolute hidden px-2.5 py-1 rounded-lg bg-slate-900/90 text-white text-[11px] sm:text-xs font-mono shadow-lg -translate-x-1/2 -translate-y-full mb-2 z-10 whitespace-nowrap">
+        <div id="canvasTooltip" class="pointer-events-none absolute hidden px-3 py-1.5 rounded-lg bg-[#08090B]/95 border border-amber-400/50 text-amber-300 text-xs font-mono-tech shadow-xl -translate-x-1/2 -translate-y-full mb-2 z-10 whitespace-nowrap">
           <span id="tooltipText">V: 0.000 V | I: 0.000 mA</span>
         </div>
       </div>
 
-      <div class="mt-3 flex flex-col sm:flex-row sm:items-center justify-between text-xs text-slate-500 px-1 gap-1.5">
-        <div>Serial format: <span class="font-mono text-slate-700">V_LED,I_mA</span> (e.g., <span class="font-mono text-slate-700">2.840,9.820</span>)</div>
-        <div>Connection: <span id="serialDetail" class="font-mono text-slate-700">9600 8N1 · Not connected</span></div>
+      <div class="mt-3.5 flex flex-col sm:flex-row sm:items-center justify-between text-xs font-mono-tech text-slate-400 px-1 gap-1.5">
+        <div>TRACE: <span class="text-amber-400">1.25px Amber</span> &bull; MARKERS: <span class="text-amber-300">&times; Data</span> / <span class="text-lime-300">+ Live</span></div>
+        <div>PORT: <span id="serialDetail" class="text-slate-200">9600 8N1 &middot; DISCONNECTED</span></div>
       </div>
     </div>
   </main>
 
-  <!-- OTG HELP MODAL -->
-  <div id="otgModal" class="hidden fixed inset-0 z-50 bg-slate-900/50 flex items-center justify-center p-4">
-    <div class="bg-white rounded-2xl border border-slate-200 shadow-xl max-w-lg w-full p-5 space-y-4">
-      <div class="flex items-center justify-between">
-        <h3 class="text-base font-bold text-slate-900">Mobile OTG Connection Guide</h3>
-        <button onclick="closeOtgHelp()" class="text-slate-400 hover:text-slate-700 text-sm font-semibold px-2 py-1">✕</button>
+  <!-- FOOTER CREDITS -->
+  <footer class="border-t border-white/10 bg-black/40 py-4 px-4 sm:px-8 mt-auto">
+    <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-2 text-xs font-mono-tech text-slate-400">
+      <div class="flex items-center gap-2">
+        <span class="text-amber-400 font-bold">de:volt</span>
+        <span>// Semiconductor V–I Instrumentation Suite</span>
       </div>
-      <ul class="text-xs sm:text-sm text-slate-600 space-y-2 list-disc pl-5">
-        <li><strong>Android:</strong> Use a USB OTG cable/adapter with <strong>Google Chrome</strong> or <strong>Microsoft Edge</strong>. Enable <strong>OTG connection</strong> in phone settings if your brand requires it.</li>
-        <li><strong>iPhone / iPad:</strong> iOS Safari does not support the browser Web Serial API over USB/OTG. Use an Android phone or a laptop/desktop browser (Chrome/Edge) for live serial streaming.</li>
-        <li><strong>NFC Tag Tip:</strong> After tapping your NFC tag on Android, ensure it opens in <strong>Chrome</strong> (not an in-app preview) so Web Serial can prompt for the USB port.</li>
+      <div class="text-center sm:text-right text-slate-300">
+        <span class="text-amber-300 font-semibold">PRADEEP S</span> (2026303080) &nbsp;|&nbsp;
+        <span class="text-amber-300 font-semibold">VISHAL KARTHIK R P</span> (2026303060)
+      </div>
+    </div>
+  </footer>
+
+  <!-- OTG HELP MODAL -->
+  <div id="otgModal" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="devolt-glass rounded-2xl max-w-lg w-full p-5 sm:p-6 space-y-4">
+      <div class="flex items-center justify-between border-b border-white/10 pb-3">
+        <h3 class="text-base font-bold text-amber-400 font-mono-tech uppercase">Mobile OTG Connection Guide</h3>
+        <button onclick="closeOtgHelp()" class="text-slate-400 hover:text-white text-sm font-bold px-2 py-1 cursor-pointer">✕</button>
+      </div>
+      <ul class="text-xs sm:text-sm text-slate-300 space-y-2.5 list-disc pl-5">
+        <li><strong class="text-white">Android Devices:</strong> Attach a USB OTG adapter and open this page in <strong class="text-amber-300">Google Chrome</strong> or <strong class="text-amber-300">Microsoft Edge</strong>. Enable OTG in phone settings if required.</li>
+        <li><strong class="text-white">iOS / Safari:</strong> Apple Safari does not expose the Web Serial API over USB. Use an Android device or desktop Chrome/Edge.</li>
+        <li><strong class="text-white">NFC Tag Launch:</strong> Ensure your NFC URL opens directly in <strong class="text-amber-300">Chrome</strong> rather than an embedded app webview.</li>
       </ul>
-      <div class="flex justify-end">
-        <button onclick="closeOtgHelp()" class="px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold">Got it</button>
+      <div class="flex justify-end pt-2">
+        <button onclick="closeOtgHelp()" class="btn-volt px-4 py-2 rounded-lg text-xs cursor-pointer">Acknowledge</button>
       </div>
     </div>
   </div>
 
   <!-- MATLAB MODAL -->
-  <div id="matlabModal" class="hidden fixed inset-0 z-50 bg-slate-900/50 flex items-center justify-center p-4">
-    <div class="bg-white rounded-2xl border border-slate-200 shadow-xl max-w-2xl w-full p-5 sm:p-6 space-y-4">
-      <div class="flex items-center justify-between">
+  <div id="matlabModal" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="devolt-glass rounded-2xl max-w-2xl w-full p-5 sm:p-6 space-y-4">
+      <div class="flex items-center justify-between border-b border-white/10 pb-3">
         <div>
-          <h3 class="text-base font-bold text-slate-900">MATLAB Plot Script (plot_led_vi_curve.m)</h3>
-          <p id="matlabNote" class="text-xs text-slate-500">Includes your recorded readings.</p>
+          <h3 class="text-base font-bold text-amber-400 font-mono-tech">MATLAB Script // plot_led_vi_curve.m</h3>
+          <p id="matlabNote" class="text-xs text-slate-400 mt-0.5">Includes your recorded readings.</p>
         </div>
-        <button onclick="closeMatlabModal()" class="text-slate-400 hover:text-slate-700 text-sm font-semibold px-2 py-1">✕</button>
+        <button onclick="closeMatlabModal()" class="text-slate-400 hover:text-white text-sm font-bold px-2 py-1 cursor-pointer">✕</button>
       </div>
-      <pre id="matlabCodeBlock" class="bg-slate-900 text-slate-100 text-xs font-mono p-4 rounded-xl overflow-x-auto max-h-64"></pre>
+      <pre id="matlabCodeBlock" class="bg-[#060709] border border-white/10 text-amber-200 text-xs font-mono-tech p-4 rounded-xl overflow-x-auto max-h-64"></pre>
       <div class="flex flex-wrap justify-end gap-2">
-        <button onclick="copyMatlabCode()" class="px-4 py-2 rounded-lg border border-slate-200 hover:bg-slate-50 text-slate-700 text-xs font-semibold">Copy Code</button>
-        <button onclick="downloadMatlabScript()" class="px-4 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold">Download .m File</button>
+        <button onclick="copyMatlabCode()" class="btn-ghost px-4 py-2 rounded-lg text-xs font-semibold cursor-pointer">Copy Code</button>
+        <button onclick="downloadMatlabScript()" class="btn-volt px-4 py-2 rounded-lg text-xs cursor-pointer">Download .m File</button>
       </div>
     </div>
   </div>
@@ -336,28 +439,28 @@
       noReadingsBanner.classList.toggle('hidden', hasReadings);
 
       if (isConnected) {
-        statusBadge.className = 'inline-flex items-center px-2.5 py-1 rounded-full text-[11px] sm:text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200 whitespace-nowrap';
-        statusDot.className = 'w-2 h-2 rounded-full bg-emerald-500 mr-1.5 animate-ping shrink-0';
-        statusText.textContent = hasReadings ? 'Connected · Live' : 'Connected · Waiting';
+        statusBadge.className = 'inline-flex items-center px-3 py-1.5 rounded-lg text-[11px] sm:text-xs font-mono-tech font-medium bg-lime-400/10 text-lime-300 border border-lime-400/30 whitespace-nowrap';
+        statusDot.className = 'w-2 h-2 rounded-full bg-lime-400 mr-2 animate-ping shrink-0';
+        statusText.textContent = hasReadings ? 'ONLINE // STREAMING' : 'ONLINE // WAITING';
         btnConnectText.textContent = 'Disconnect';
-        serialDetail.textContent = '9600 8N1 · Connected';
+        serialDetail.textContent = '9600 8N1 · CONNECTED';
       } else {
         btnConnectText.textContent = 'Connect OTG / USB';
-        serialDetail.textContent = '9600 8N1 · Disconnected';
+        serialDetail.textContent = '9600 8N1 · DISCONNECTED';
         if (!hasReadings) {
-          statusBadge.className = 'inline-flex items-center px-2.5 py-1 rounded-full text-[11px] sm:text-xs font-semibold bg-amber-50 text-amber-800 border border-amber-200 whitespace-nowrap';
-          statusDot.className = 'w-2 h-2 rounded-full bg-amber-500 mr-1.5 shrink-0';
-          statusText.textContent = 'No readings taken so far';
+          statusBadge.className = 'inline-flex items-center px-3 py-1.5 rounded-lg text-[11px] sm:text-xs font-mono-tech font-medium bg-amber-500/10 text-amber-300 border border-amber-500/30 whitespace-nowrap';
+          statusDot.className = 'w-2 h-2 rounded-full bg-amber-400 mr-2 shrink-0';
+          statusText.textContent = 'NO READINGS TAKEN';
         } else {
-          statusBadge.className = 'inline-flex items-center px-2.5 py-1 rounded-full text-[11px] sm:text-xs font-semibold bg-slate-100 text-slate-700 border border-slate-200 whitespace-nowrap';
-          statusDot.className = 'w-2 h-2 rounded-full bg-slate-500 mr-1.5 shrink-0';
-          statusText.textContent = `Saved · ${dataPoints.length} pts`;
+          statusBadge.className = 'inline-flex items-center px-3 py-1.5 rounded-lg text-[11px] sm:text-xs font-mono-tech font-medium bg-white/5 text-slate-300 border border-white/15 whitespace-nowrap';
+          statusDot.className = 'w-2 h-2 rounded-full bg-amber-400 mr-2 shrink-0';
+          statusText.textContent = `CAPTURED // ${dataPoints.length} PTS`;
         }
       }
 
       graphSubtitle.textContent = hasReadings
-        ? `Showing ${dataPoints.length} recorded V–I reading(s)`
-        : 'No readings taken so far — connect Arduino via USB/OTG to plot';
+        ? `Displaying ${dataPoints.length} sampled V–I coordinate(s)`
+        : 'No readings taken so far — connect hardware via USB/OTG to plot';
     }
 
     function clearData() {
@@ -375,13 +478,17 @@
         alert('No readings taken so far to export.');
         return;
       }
-      const rows = ['V_LED(V),I_mA(mA),Timestamp'];
+      const rows = [
+        '# de:volt LED V-I Characteristic Data',
+        '# PRADEEP S (2026303080) & VISHAL KARTHIK R P (2026303060)',
+        'V_LED(V),I_mA(mA),Timestamp'
+      ];
       dataPoints.forEach(p => rows.push(`${p.v.toFixed(4)},${p.i.toFixed(4)},${new Date(p.t).toISOString()}`));
       const blob = new Blob([rows.join('\n')], { type: 'text/csv;charset=utf-8;' });
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = `LED_VI_Curve_${Date.now()}.csv`;
+      a.download = `devolt_LED_VI_${Date.now()}.csv`;
       a.click();
       URL.revokeObjectURL(url);
     }
@@ -392,22 +499,32 @@
       const vVec = hasData ? sorted.map(p => p.v.toFixed(4)).join(', ') : '0.00, 1.00, 1.50, 1.80, 2.00, 2.20, 2.40';
       const iVec = hasData ? sorted.map(p => p.i.toFixed(4)).join(', ') : '0.00, 0.00, 0.02, 0.25, 2.10, 9.40, 20.50';
 
-      return `% LED V-I Characteristic Curve Plotter
+      return `% de:volt // LED V-I Characteristic Curve Plotter
+% Authors: PRADEEP S (2026303080) & VISHAL KARTHIK R P (2026303060)
+
 V_LED = [${vVec}]; % Voltage across LED (V)
 I_mA  = [${iVec}]; % Diode current (mA)
 
-figure('Name', 'LED V-I Characteristic Curve', 'Color', 'w');
-plot(V_LED, I_mA, '-o', 'LineWidth', 2, 'MarkerSize', 6);
+figure('Name', 'de:volt LED V-I Curve', 'Color', [0.04 0.05 0.07]);
+ax = gca;
+ax.Color = [0.06 0.07 0.09];
+ax.XColor = [0.85 0.85 0.85];
+ax.YColor = [0.85 0.85 0.85];
+ax.GridColor = [0.96 0.62 0.04];
+ax.GridAlpha = 0.2;
+
+plot(V_LED, I_mA, '-x', 'Color', [0.98 0.75 0.14], 'LineWidth', 1.25, 'MarkerSize', 7);
 grid on;
-xlabel('LED Voltage V_{LED} (V)', 'FontWeight', 'bold');
-ylabel('Current I (mA)', 'FontWeight', 'bold');
-title('LED Forward V–I Characteristic Curve', 'FontWeight', 'bold');
+xlabel('LED Voltage V_{LED} (V)', 'FontWeight', 'bold', 'Color', 'w');
+ylabel('Current I (mA)', 'FontWeight', 'bold', 'Color', 'w');
+title('LED Forward V–I Characteristic Curve', 'FontWeight', 'bold', 'Color', [0.98 0.75 0.14]);
 
 idxKnee = find(I_mA >= 0.5, 1, 'first');
 if ~isempty(idxKnee)
     hold on;
-    plot(V_LED(idxKnee), I_mA(idxKnee), 'rp', 'MarkerSize', 12, 'MarkerFaceColor', 'r');
-    text(V_LED(idxKnee), I_mA(idxKnee), sprintf('  Knee ~ %.2f V', V_LED(idxKnee)), 'VerticalAlignment', 'bottom');
+    plot(V_LED(idxKnee), I_mA(idxKnee), '+', 'Color', [0.85 0.98 0.62], 'MarkerSize', 12, 'LineWidth', 1.8);
+    text(V_LED(idxKnee), I_mA(idxKnee), sprintf('  Knee ~ %.2f V', V_LED(idxKnee)), ...
+         'Color', [0.85 0.98 0.62], 'VerticalAlignment', 'bottom');
     hold off;
 end`;
     }
@@ -419,7 +536,7 @@ end`;
       const hasData = dataPoints.length > 0;
       document.getElementById('matlabNote').textContent = hasData
         ? `Embedded ${dataPoints.length} recorded reading(s) into MATLAB arrays.`
-        : 'No readings taken so far — using placeholder sample arrays until data is recorded.';
+        : 'No readings taken so far — using sample arrays until hardware data is captured.';
       document.getElementById('matlabCodeBlock').textContent = buildMatlabCode();
       document.getElementById('matlabModal').classList.remove('hidden');
     }
@@ -432,9 +549,37 @@ end`;
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = 'plot_led_vi_curve.m';
+      a.download = 'devolt_led_vi_curve.m';
       a.click();
       URL.revokeObjectURL(url);
+    }
+
+    function drawCrossMarker(cx, cy, size, color, lineWidth) {
+      ctx.save();
+      ctx.strokeStyle = color;
+      ctx.lineWidth = lineWidth;
+      ctx.beginPath();
+      ctx.moveTo(cx - size, cy - size);
+      ctx.lineTo(cx + size, cy + size);
+      ctx.moveTo(cx + size, cy - size);
+      ctx.lineTo(cx - size, cy + size);
+      ctx.stroke();
+      ctx.restore();
+    }
+
+    function drawPlusReticle(cx, cy, size, color, lineWidth) {
+      ctx.save();
+      ctx.strokeStyle = color;
+      ctx.lineWidth = lineWidth;
+      ctx.shadowColor = color;
+      ctx.shadowBlur = 8;
+      ctx.beginPath();
+      ctx.moveTo(cx - size, cy);
+      ctx.lineTo(cx + size, cy);
+      ctx.moveTo(cx, cy - size);
+      ctx.lineTo(cx, cy + size);
+      ctx.stroke();
+      ctx.restore();
     }
 
     function renderGraph() {
@@ -444,14 +589,15 @@ end`;
       const h = canvas.height;
       ctx.clearRect(0, 0, w, h);
 
-      ctx.fillStyle = '#ffffff';
+      // Deep carbon oscilloscope surface
+      ctx.fillStyle = '#0B0D12';
       ctx.fillRect(0, 0, w, h);
 
       const isCompact = w < 520 * dpr;
-      const padL = (isCompact ? 48 : 65) * dpr;
-      const padR = (isCompact ? 16 : 30) * dpr;
-      const padT = (isCompact ? 24 : 35) * dpr;
-      const padB = (isCompact ? 46 : 55) * dpr;
+      const padL = (isCompact ? 50 : 68) * dpr;
+      const padR = (isCompact ? 18 : 32) * dpr;
+      const padT = (isCompact ? 26 : 36) * dpr;
+      const padB = (isCompact ? 48 : 58) * dpr;
       const gw = Math.max(10, w - padL - padR);
       const gh = Math.max(10, h - padT - padB);
 
@@ -465,10 +611,11 @@ end`;
       const mapX = v => padL + (v / maxV) * gw;
       const mapY = i => padT + gh - (i / maxI) * gh;
 
-      ctx.strokeStyle = '#e2e8f0';
+      // Subtle technical gridlines
+      ctx.strokeStyle = 'rgba(245, 158, 11, 0.10)';
       ctx.lineWidth = 1 * dpr;
-      ctx.fillStyle = '#64748b';
-      ctx.font = `${(isCompact ? 9.5 : 11) * dpr}px Inter, sans-serif`;
+      ctx.fillStyle = '#94A3B8';
+      ctx.font = `${(isCompact ? 9.5 : 11) * dpr}px "JetBrains Mono", monospace`;
 
       ctx.textAlign = 'right';
       ctx.textBaseline = 'middle';
@@ -479,7 +626,7 @@ end`;
         ctx.moveTo(padL, y);
         ctx.lineTo(w - padR, y);
         ctx.stroke();
-        ctx.fillText(val.toFixed(1), padL - 6 * dpr, y);
+        ctx.fillText(val.toFixed(1), padL - 8 * dpr, y);
       }
 
       const xSteps = isCompact ? 4 : 6;
@@ -492,39 +639,45 @@ end`;
         ctx.moveTo(x, padT);
         ctx.lineTo(x, padT + gh);
         ctx.stroke();
-        ctx.fillText(val.toFixed(2), x, padT + gh + 6 * dpr);
+        ctx.fillText(val.toFixed(2), x, padT + gh + 8 * dpr);
       }
 
-      ctx.strokeStyle = '#94a3b8';
-      ctx.lineWidth = 1.5 * dpr;
+      // Primary axes
+      ctx.strokeStyle = 'rgba(251, 191, 36, 0.45)';
+      ctx.lineWidth = 1.3 * dpr;
       ctx.beginPath();
       ctx.moveTo(padL, padT);
       ctx.lineTo(padL, padT + gh);
       ctx.lineTo(w - padR, padT + gh);
       ctx.stroke();
 
-      ctx.fillStyle = '#0f172a';
-      ctx.font = `bold ${(isCompact ? 10.5 : 12) * dpr}px Inter, sans-serif`;
+      // Axis labels
+      ctx.fillStyle = '#F8FAFC';
+      ctx.font = `600 ${(isCompact ? 10.5 : 12) * dpr}px "Space Grotesk", sans-serif`;
       ctx.textAlign = 'center';
-      ctx.fillText('LED Voltage V_LED (V)', padL + gw / 2, h - 14 * dpr);
+      ctx.fillText('LED Voltage V_LED (V)', padL + gw / 2, h - 15 * dpr);
 
       ctx.save();
-      ctx.translate((isCompact ? 14 : 20) * dpr, padT + gh / 2);
+      ctx.translate((isCompact ? 15 : 22) * dpr, padT + gh / 2);
       ctx.rotate(-Math.PI / 2);
       ctx.fillText('Current I (mA)', 0, 0);
       ctx.restore();
 
       if (dataPoints.length === 0) {
-        ctx.fillStyle = '#64748b';
-        ctx.font = `${(isCompact ? 12 : 14) * dpr}px Inter, sans-serif`;
-        ctx.fillText('No readings taken so far', padL + gw / 2, padT + gh / 2);
+        ctx.fillStyle = 'rgba(251, 191, 36, 0.65)';
+        ctx.font = `500 ${(isCompact ? 12 : 14) * dpr}px "JetBrains Mono", monospace`;
+        ctx.fillText('// NO READINGS TAKEN SO FAR', padL + gw / 2, padT + gh / 2);
         return;
       }
 
+      // Thinner high-voltage amber trace
       const sorted = [...dataPoints].sort((a, b) => a.v - b.v);
+      ctx.save();
       ctx.beginPath();
-      ctx.strokeStyle = '#2563eb';
-      ctx.lineWidth = 2.5 * dpr;
+      ctx.strokeStyle = '#FBBF24';
+      ctx.lineWidth = 1.25 * dpr;
+      ctx.shadowColor = 'rgba(245, 158, 11, 0.45)';
+      ctx.shadowBlur = 6 * dpr;
       sorted.forEach((pt, idx) => {
         const x = mapX(pt.v);
         const y = mapY(pt.i);
@@ -532,19 +685,17 @@ end`;
         else ctx.lineTo(x, y);
       });
       ctx.stroke();
+      ctx.restore();
 
+      // Cross symbols (x) for recorded data points
+      const crossSize = 3.5 * dpr;
       sorted.forEach(pt => {
-        ctx.beginPath();
-        ctx.arc(mapX(pt.v), mapY(pt.i), 3.5 * dpr, 0, Math.PI * 2);
-        ctx.fillStyle = '#1d4ed8';
-        ctx.fill();
+        drawCrossMarker(mapX(pt.v), mapY(pt.i), crossSize, '#F59E0B', 1.3 * dpr);
       });
 
+      // Live active reading reticle (+)
       const latest = dataPoints[dataPoints.length - 1];
-      ctx.beginPath();
-      ctx.arc(mapX(latest.v), mapY(latest.i), 5 * dpr, 0, Math.PI * 2);
-      ctx.fillStyle = '#ef4444';
-      ctx.fill();
+      drawPlusReticle(mapX(latest.v), mapY(latest.i), 6 * dpr, '#D9F99D', 1.8 * dpr);
     }
 
     function showTooltipAt(clientX, clientY) {
@@ -555,10 +706,10 @@ end`;
       const dpr = window.devicePixelRatio || 1;
       const w = canvas.width, h = canvas.height;
       const isCompact = w < 520 * dpr;
-      const padL = (isCompact ? 48 : 65) * dpr;
-      const padR = (isCompact ? 16 : 30) * dpr;
-      const padT = (isCompact ? 24 : 35) * dpr;
-      const padB = (isCompact ? 46 : 55) * dpr;
+      const padL = (isCompact ? 50 : 68) * dpr;
+      const padR = (isCompact ? 18 : 32) * dpr;
+      const padT = (isCompact ? 26 : 36) * dpr;
+      const padB = (isCompact ? 48 : 58) * dpr;
       const gw = Math.max(10, w - padL - padR);
       const gh = Math.max(10, h - padT - padB);
 
@@ -575,8 +726,8 @@ end`;
 
       if (nearest && best < 36 * dpr) {
         tooltipText.textContent = `V: ${nearest.v.toFixed(3)} V | I: ${nearest.i.toFixed(3)} mA`;
-        tooltip.style.left = `${Math.max(70, Math.min(rect.width - 70, mx))}px`;
-        tooltip.style.top = `${Math.max(36, my)}px`;
+        tooltip.style.left = `${Math.max(80, Math.min(rect.width - 80, mx))}px`;
+        tooltip.style.top = `${Math.max(40, my)}px`;
         tooltip.classList.remove('hidden');
       } else {
         tooltip.classList.add('hidden');
