@@ -10,13 +10,13 @@
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg-carbon: #08090B;
-      --bg-obsidian: #0E1014;
-      --volt-amber: #F59E0B;
-      --volt-gold: #FBBF24;
-      --volt-acid: #D9F99D;
-      --glass-surface: rgba(14, 16, 20, 0.72);
-      --glass-border: rgba(245, 158, 11, 0.22);
+      --bg-carbon: #08070C;
+      --bg-obsidian: #0E0B16;
+      --volt-purple: #A855F7;
+      --volt-violet: #C084FC;
+      --volt-acid: #E9D5FF;
+      --glass-surface: rgba(16, 12, 24, 0.74);
+      --glass-border: rgba(168, 85, 247, 0.25);
     }
 
     body {
@@ -25,10 +25,10 @@
       color: #F8FAFC;
       overflow-x: hidden;
       background-image:
-        radial-gradient(circle at 12% 10%, rgba(245, 158, 11, 0.11), transparent 38%),
-        radial-gradient(circle at 88% 85%, rgba(217, 249, 157, 0.06), transparent 42%),
-        linear-gradient(rgba(245, 158, 11, 0.04) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(245, 158, 11, 0.04) 1px, transparent 1px);
+        radial-gradient(circle at 12% 10%, rgba(168, 85, 247, 0.14), transparent 38%),
+        radial-gradient(circle at 88% 85%, rgba(192, 132, 252, 0.08), transparent 42%),
+        linear-gradient(rgba(168, 85, 247, 0.045) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(168, 85, 247, 0.045) 1px, transparent 1px);
       background-size: 100% 100%, 100% 100%, 32px 32px, 32px 32px;
     }
 
@@ -43,12 +43,12 @@
       -webkit-backdrop-filter: blur(22px) saturate(160%);
       border: 1px solid var(--glass-border);
       box-shadow:
-        inset 0 1px 0 0 rgba(251, 191, 36, 0.14),
+        inset 0 1px 0 0 rgba(192, 132, 252, 0.16),
         0 18px 40px -15px rgba(0, 0, 0, 0.85);
     }
 
     .devolt-card {
-      background: linear-gradient(180deg, rgba(20, 23, 29, 0.78) 0%, rgba(11, 13, 17, 0.85) 100%);
+      background: linear-gradient(180deg, rgba(24, 18, 36, 0.8) 0%, rgba(12, 10, 19, 0.88) 100%);
       backdrop-filter: blur(18px);
       -webkit-backdrop-filter: blur(18px);
       border: 1px solid rgba(255, 255, 255, 0.08);
@@ -57,20 +57,20 @@
     }
 
     .devolt-card:hover {
-      border-color: rgba(245, 158, 11, 0.38);
+      border-color: rgba(168, 85, 247, 0.42);
     }
 
     .btn-volt {
-      background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%);
-      color: #08090B;
+      background: linear-gradient(135deg, #A855F7 0%, #7E22CE 100%);
+      color: #FFFFFF;
       font-weight: 700;
-      box-shadow: 0 0 20px rgba(245, 158, 11, 0.25);
+      box-shadow: 0 0 20px rgba(168, 85, 247, 0.28);
       transition: all 0.18s ease;
     }
 
     .btn-volt:hover {
-      background: linear-gradient(135deg, #FBBF24 0%, #F59E0B 100%);
-      box-shadow: 0 0 26px rgba(251, 191, 36, 0.42);
+      background: linear-gradient(135deg, #C084FC 0%, #9333EA 100%);
+      box-shadow: 0 0 26px rgba(192, 132, 252, 0.45);
     }
 
     .btn-ghost {
@@ -81,9 +81,9 @@
     }
 
     .btn-ghost:hover {
-      border-color: rgba(245, 158, 11, 0.45);
-      background: rgba(245, 158, 11, 0.08);
-      color: #FBBF24;
+      border-color: rgba(168, 85, 247, 0.48);
+      background: rgba(168, 85, 247, 0.1);
+      color: #E9D5FF;
     }
 
     canvas {
@@ -94,31 +94,31 @@
     }
   </style>
 </head>
-<body class="min-h-screen flex flex-col antialiased selection:bg-amber-500 selection:text-black">
+<body class="min-h-screen flex flex-col antialiased selection:bg-purple-500 selection:text-white">
 
   <!-- TOP NAVIGATION BAR -->
   <header class="devolt-glass sticky top-0 z-30 border-x-0 border-t-0">
-    <div class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-3 flex flex-wrap sm:flex-nowrap items-center justify-between gap-3">
+    <div class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-3 flex flex-wrap lg:flex-nowrap items-center justify-between gap-3">
       <div class="flex items-center space-x-3 min-w-0">
-        <div class="w-10 h-10 rounded-xl bg-amber-500/15 border border-amber-400/40 flex items-center justify-center text-amber-400 shrink-0 shadow-[0_0_20px_rgba(245,158,11,0.2)]">
+        <div class="w-10 h-10 rounded-xl bg-purple-500/15 border border-purple-400/40 flex items-center justify-center text-purple-300 shrink-0 shadow-[0_0_20px_rgba(168,85,247,0.25)]">
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M13 10V3L4 14h7v7l9-11h-7z" />
           </svg>
         </div>
-        <div class="truncate">
-          <div class="flex items-center gap-2">
-            <span class="font-mono-tech text-xs font-bold tracking-widest uppercase px-2 py-0.5 rounded bg-amber-500/15 text-amber-400 border border-amber-500/30">de:volt</span>
+        <div class="min-w-0">
+          <div class="flex items-center gap-2 flex-wrap">
+            <span class="font-mono-tech text-xs font-bold tracking-widest uppercase px-2 py-0.5 rounded bg-purple-500/15 text-purple-300 border border-purple-500/30">de:volt</span>
             <h1 class="font-bold text-slate-100 text-sm sm:text-lg tracking-tight truncate">LED V–I Characteristic Analyzer</h1>
           </div>
-          <p class="text-[11px] sm:text-xs text-slate-400 font-mono-tech truncate mt-0.5">
-            PRADEEP S [2026303080] &bull; VISHAL KARTHIK R P [2026303060]
+          <p class="text-xs sm:text-sm text-purple-200 font-mono-tech font-semibold mt-0.5">
+            PRADEEP S <span class="text-purple-400">(2026303080)</span> &nbsp;&bull;&nbsp; VISHAL KARTHIK R P <span class="text-purple-400">(2026303060)</span>
           </p>
         </div>
       </div>
 
       <div class="flex items-center gap-2.5 ml-auto">
-        <div id="statusBadge" class="inline-flex items-center px-3 py-1.5 rounded-lg text-[11px] sm:text-xs font-mono-tech font-medium bg-amber-500/10 text-amber-300 border border-amber-500/30 whitespace-nowrap">
-          <span id="statusDot" class="w-2 h-2 rounded-full bg-amber-400 mr-2 shrink-0"></span>
+        <div id="statusBadge" class="inline-flex items-center px-3 py-1.5 rounded-lg text-[11px] sm:text-xs font-mono-tech font-medium bg-purple-500/10 text-purple-200 border border-purple-500/30 whitespace-nowrap">
+          <span id="statusDot" class="w-2 h-2 rounded-full bg-purple-400 mr-2 shrink-0"></span>
           <span id="statusText">NO READINGS TAKEN</span>
         </div>
 
@@ -135,11 +135,11 @@
     <!-- CONNECTION / STANDBY BANNER -->
     <div id="noReadingsBanner" class="devolt-glass rounded-2xl p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
       <div class="flex items-start sm:items-center space-x-3.5">
-        <div class="w-2.5 h-2.5 rounded-full bg-amber-400 mt-1.5 sm:mt-0 shrink-0 shadow-[0_0_10px_#F59E0B]"></div>
+        <div class="w-2.5 h-2.5 rounded-full bg-purple-400 mt-1.5 sm:mt-0 shrink-0 shadow-[0_0_10px_#A855F7]"></div>
         <div>
-          <p class="text-sm font-bold text-amber-300 tracking-wide uppercase font-mono-tech">Standby // No Readings Taken So Far</p>
+          <p class="text-sm font-bold text-purple-200 tracking-wide uppercase font-mono-tech">Standby // No Readings Taken So Far</p>
           <p class="text-xs text-slate-300 mt-1 leading-relaxed">
-            Connect via <strong class="text-white">USB / Android OTG</strong> in <strong class="text-white">Chrome or Edge</strong> and select <strong class="text-amber-300">Connect OTG / USB</strong>. Expected serial stream: <span class="font-mono-tech text-lime-300 bg-black/50 px-1.5 py-0.5 rounded border border-white/10">V_LED,I_mA</span> @ 9600 baud.
+            Connect via <strong class="text-white">USB / Android OTG</strong> in <strong class="text-white">Chrome or Edge</strong> and select <strong class="text-purple-300">Connect OTG / USB</strong>. Plots only when voltage changes (&Delta;V &ge; 0.005 V). Stream format: <span class="font-mono-tech text-purple-200 bg-black/50 px-1.5 py-0.5 rounded border border-white/10">V_LED,I_mA</span> @ 9600 baud.
           </p>
         </div>
       </div>
@@ -159,20 +159,20 @@
         <div class="text-[11px] font-mono-tech text-slate-400 uppercase tracking-wider mb-1">LED Voltage (V_LED)</div>
         <div class="flex items-baseline space-x-1.5">
           <span id="valVoltage" class="font-mono-tech text-2xl sm:text-3xl font-bold text-slate-100">--</span>
-          <span class="font-mono-tech text-xs sm:text-sm font-semibold text-amber-400">V</span>
+          <span class="font-mono-tech text-xs sm:text-sm font-semibold text-purple-400">V</span>
         </div>
       </div>
 
       <div class="devolt-card p-4 rounded-xl">
         <div class="text-[11px] font-mono-tech text-slate-400 uppercase tracking-wider mb-1">Forward Current (I)</div>
         <div class="flex items-baseline space-x-1.5">
-          <span id="valCurrent" class="font-mono-tech text-2xl sm:text-3xl font-bold text-amber-400">--</span>
-          <span class="font-mono-tech text-xs sm:text-sm font-semibold text-amber-400">mA</span>
+          <span id="valCurrent" class="font-mono-tech text-2xl sm:text-3xl font-bold text-purple-300">--</span>
+          <span class="font-mono-tech text-xs sm:text-sm font-semibold text-purple-400">mA</span>
         </div>
       </div>
 
       <div class="devolt-card p-4 rounded-xl">
-        <div class="text-[11px] font-mono-tech text-slate-400 uppercase tracking-wider mb-1">Sample Count</div>
+        <div class="text-[11px] font-mono-tech text-slate-400 uppercase tracking-wider mb-1">Active Plots</div>
         <div class="flex items-baseline space-x-1.5">
           <span id="valCount" class="font-mono-tech text-2xl sm:text-3xl font-bold text-slate-100">0</span>
           <span class="font-mono-tech text-xs sm:text-sm font-semibold text-slate-400">pts</span>
@@ -182,8 +182,8 @@
       <div class="devolt-card p-4 rounded-xl">
         <div class="text-[11px] font-mono-tech text-slate-400 uppercase tracking-wider mb-1">Turn-On Knee (V_th)</div>
         <div class="flex items-baseline space-x-1.5">
-          <span id="valKnee" class="font-mono-tech text-2xl sm:text-3xl font-bold text-lime-300">--</span>
-          <span class="font-mono-tech text-xs sm:text-sm font-semibold text-lime-300">V</span>
+          <span id="valKnee" class="font-mono-tech text-2xl sm:text-3xl font-bold text-fuchsia-300">--</span>
+          <span class="font-mono-tech text-xs sm:text-sm font-semibold text-fuchsia-300">V</span>
         </div>
       </div>
     </div>
@@ -193,13 +193,21 @@
       <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
         <div>
           <div class="flex items-center gap-2">
-            <span class="w-2 h-2 rounded-full bg-amber-400"></span>
+            <span class="w-2 h-2 rounded-full bg-purple-400"></span>
             <h2 class="text-base sm:text-lg font-bold text-white tracking-tight">Live V–I Characteristic Curve (LED)</h2>
           </div>
-          <p id="graphSubtitle" class="text-xs font-mono-tech text-slate-400 mt-0.5">No readings taken so far — awaiting hardware telemetry</p>
+          <p id="graphSubtitle" class="text-xs font-mono-tech text-slate-400 mt-0.5">No readings taken so far — awaiting voltage sweep changes</p>
         </div>
 
         <div class="flex flex-wrap items-center gap-2">
+          <!-- Graph-only zoom controls -->
+          <div class="inline-flex items-center rounded-lg border border-purple-500/30 bg-black/40 overflow-hidden">
+            <button onclick="zoomGraph(1.25)" title="Zoom In Graph" class="px-2.5 py-1.5 text-xs font-mono-tech font-bold text-purple-200 hover:bg-purple-500/20 cursor-pointer">+</button>
+            <span id="zoomLabel" class="px-2 py-1.5 text-[11px] font-mono-tech text-purple-300 border-x border-purple-500/20">1.0x</span>
+            <button onclick="zoomGraph(0.8)" title="Zoom Out Graph" class="px-2.5 py-1.5 text-xs font-mono-tech font-bold text-purple-200 hover:bg-purple-500/20 cursor-pointer">&minus;</button>
+            <button onclick="resetZoom()" title="Reset Graph Zoom" class="px-2 py-1.5 text-[11px] font-mono-tech text-slate-300 hover:bg-purple-500/20 border-l border-purple-500/20 cursor-pointer">1:1</button>
+          </div>
+
           <button onclick="openMatlabModal()" class="btn-ghost flex-1 sm:flex-initial px-3.5 py-2 sm:py-1.5 rounded-lg text-xs font-mono-tech font-semibold cursor-pointer">
             MATLAB (.m)
           </button>
@@ -212,30 +220,30 @@
         </div>
       </div>
 
-      <div id="canvasWrapper" class="relative w-full h-[300px] sm:h-[390px] lg:h-[440px] bg-[#0B0D12] rounded-xl border border-amber-500/20 overflow-hidden shadow-inner">
+      <div id="canvasWrapper" class="relative w-full h-[300px] sm:h-[390px] lg:h-[440px] bg-[#0A0810] rounded-xl border border-purple-500/25 overflow-hidden shadow-inner">
         <canvas id="viCanvas"></canvas>
-        <div id="canvasTooltip" class="pointer-events-none absolute hidden px-3 py-1.5 rounded-lg bg-[#08090B]/95 border border-amber-400/50 text-amber-300 text-xs font-mono-tech shadow-xl -translate-x-1/2 -translate-y-full mb-2 z-10 whitespace-nowrap">
+        <div id="canvasTooltip" class="pointer-events-none absolute hidden px-3 py-1.5 rounded-lg bg-[#08070C]/95 border border-purple-400/60 text-purple-200 text-xs font-mono-tech shadow-xl -translate-x-1/2 -translate-y-full mb-2 z-10 whitespace-nowrap">
           <span id="tooltipText">V: 0.000 V | I: 0.000 mA</span>
         </div>
       </div>
 
       <div class="mt-3.5 flex flex-col sm:flex-row sm:items-center justify-between text-xs font-mono-tech text-slate-400 px-1 gap-1.5">
-        <div>TRACE: <span class="text-amber-400">1.25px Amber</span> &bull; MARKERS: <span class="text-amber-300">&times; Data</span> / <span class="text-lime-300">+ Live</span></div>
+        <div>TRACE: <span class="text-purple-300">1.25px Violet</span> &bull; MARKERS: <span class="text-purple-300">&times; Data</span> / <span class="text-fuchsia-300">+ Live</span> / <span class="text-amber-300">&#9733; Zoom Focus</span> &bull; IDLE FILTERED</div>
         <div>PORT: <span id="serialDetail" class="text-slate-200">9600 8N1 &middot; DISCONNECTED</span></div>
       </div>
     </div>
   </main>
 
   <!-- FOOTER CREDITS -->
-  <footer class="border-t border-white/10 bg-black/40 py-4 px-4 sm:px-8 mt-auto">
-    <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-2 text-xs font-mono-tech text-slate-400">
+  <footer class="border-t border-white/10 bg-black/50 py-4 px-4 sm:px-8 mt-auto">
+    <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-2 text-xs sm:text-sm font-mono-tech text-slate-300">
       <div class="flex items-center gap-2">
-        <span class="text-amber-400 font-bold">de:volt</span>
-        <span>// Semiconductor V–I Instrumentation Suite</span>
+        <span class="text-purple-400 font-bold">de:volt</span>
+        <span class="text-slate-400">// Semiconductor V–I Suite</span>
       </div>
-      <div class="text-center sm:text-right text-slate-300">
-        <span class="text-amber-300 font-semibold">PRADEEP S</span> (2026303080) &nbsp;|&nbsp;
-        <span class="text-amber-300 font-semibold">VISHAL KARTHIK R P</span> (2026303060)
+      <div class="text-center sm:text-right font-semibold">
+        <span class="text-purple-300 text-sm sm:text-base">PRADEEP S</span> <span class="text-purple-400">(2026303080)</span> &nbsp;|&nbsp;
+        <span class="text-purple-300 text-sm sm:text-base">VISHAL KARTHIK R P</span> <span class="text-purple-400">(2026303060)</span>
       </div>
     </div>
   </footer>
@@ -244,13 +252,13 @@
   <div id="otgModal" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
     <div class="devolt-glass rounded-2xl max-w-lg w-full p-5 sm:p-6 space-y-4">
       <div class="flex items-center justify-between border-b border-white/10 pb-3">
-        <h3 class="text-base font-bold text-amber-400 font-mono-tech uppercase">Mobile OTG Connection Guide</h3>
+        <h3 class="text-base font-bold text-purple-300 font-mono-tech uppercase">Mobile OTG Connection Guide</h3>
         <button onclick="closeOtgHelp()" class="text-slate-400 hover:text-white text-sm font-bold px-2 py-1 cursor-pointer">✕</button>
       </div>
       <ul class="text-xs sm:text-sm text-slate-300 space-y-2.5 list-disc pl-5">
-        <li><strong class="text-white">Android Devices:</strong> Attach a USB OTG adapter and open this page in <strong class="text-amber-300">Google Chrome</strong> or <strong class="text-amber-300">Microsoft Edge</strong>. Enable OTG in phone settings if required.</li>
+        <li><strong class="text-white">Android Devices:</strong> Attach a USB OTG adapter and open this page in <strong class="text-purple-300">Google Chrome</strong> or <strong class="text-purple-300">Microsoft Edge</strong>. Enable OTG in phone settings if required.</li>
         <li><strong class="text-white">iOS / Safari:</strong> Apple Safari does not expose the Web Serial API over USB. Use an Android device or desktop Chrome/Edge.</li>
-        <li><strong class="text-white">NFC Tag Launch:</strong> Ensure your NFC URL opens directly in <strong class="text-amber-300">Chrome</strong> rather than an embedded app webview.</li>
+        <li><strong class="text-white">NFC Tag Launch:</strong> Ensure your NFC URL opens directly in <strong class="text-purple-300">Chrome</strong> rather than an embedded app webview.</li>
       </ul>
       <div class="flex justify-end pt-2">
         <button onclick="closeOtgHelp()" class="btn-volt px-4 py-2 rounded-lg text-xs cursor-pointer">Acknowledge</button>
@@ -263,12 +271,12 @@
     <div class="devolt-glass rounded-2xl max-w-2xl w-full p-5 sm:p-6 space-y-4">
       <div class="flex items-center justify-between border-b border-white/10 pb-3">
         <div>
-          <h3 class="text-base font-bold text-amber-400 font-mono-tech">MATLAB Script // plot_led_vi_curve.m</h3>
+          <h3 class="text-base font-bold text-purple-300 font-mono-tech">MATLAB Script // plot_led_vi_curve.m</h3>
           <p id="matlabNote" class="text-xs text-slate-400 mt-0.5">Includes your recorded readings.</p>
         </div>
         <button onclick="closeMatlabModal()" class="text-slate-400 hover:text-white text-sm font-bold px-2 py-1 cursor-pointer">✕</button>
       </div>
-      <pre id="matlabCodeBlock" class="bg-[#060709] border border-white/10 text-amber-200 text-xs font-mono-tech p-4 rounded-xl overflow-x-auto max-h-64"></pre>
+      <pre id="matlabCodeBlock" class="bg-[#06050A] border border-white/10 text-purple-200 text-xs font-mono-tech p-4 rounded-xl overflow-x-auto max-h-64"></pre>
       <div class="flex flex-wrap justify-end gap-2">
         <button onclick="copyMatlabCode()" class="btn-ghost px-4 py-2 rounded-lg text-xs font-semibold cursor-pointer">Copy Code</button>
         <button onclick="downloadMatlabScript()" class="btn-volt px-4 py-2 rounded-lg text-xs cursor-pointer">Download .m File</button>
@@ -278,6 +286,17 @@
 
   <script>
     let dataPoints = [];
+    let lastPlottedVoltage = null;
+    const VOLTAGE_CHANGE_THRESHOLD = 0.005; // Ignore idle readings unless voltage changes >= 5 mV
+    const MINIMIZE_AFTER_MS = 8000; // Minimize older points after 8 seconds
+
+    // Graph-only zoom state (centered around focusV, focusI)
+    let zoomLevel = 1.0;
+    const MIN_ZOOM = 1.0;
+    const MAX_ZOOM = 6.0;
+    let focusV = null;
+    let focusI = null;
+
     let port = null;
     let reader = null;
     let keepReading = false;
@@ -290,6 +309,7 @@
     const noReadingsBanner = document.getElementById('noReadingsBanner');
     const graphSubtitle = document.getElementById('graphSubtitle');
     const serialDetail = document.getElementById('serialDetail');
+    const zoomLabel = document.getElementById('zoomLabel');
 
     const valVoltage = document.getElementById('valVoltage');
     const valCurrent = document.getElementById('valCurrent');
@@ -312,14 +332,58 @@
       }
     }
 
+    function updateZoomDisplay() {
+      zoomLabel.textContent = `${zoomLevel.toFixed(1)}x`;
+    }
+
+    function zoomGraph(factor, anchorV = null, anchorI = null) {
+      const nextZoom = Math.min(MAX_ZOOM, Math.max(MIN_ZOOM, zoomLevel * factor));
+      if (nextZoom === MIN_ZOOM) {
+        zoomLevel = MIN_ZOOM;
+        focusV = null;
+        focusI = null;
+      } else {
+        zoomLevel = nextZoom;
+        if (anchorV !== null && anchorI !== null) {
+          focusV = anchorV;
+          focusI = anchorI;
+        } else if (focusV === null || focusI === null) {
+          if (dataPoints.length > 0) {
+            const latest = dataPoints[dataPoints.length - 1];
+            focusV = latest.v;
+            focusI = latest.i;
+          } else {
+            focusV = 1.5;
+            focusI = 5.0;
+          }
+        }
+      }
+      updateZoomDisplay();
+      renderGraph();
+    }
+
+    function resetZoom() {
+      zoomLevel = MIN_ZOOM;
+      focusV = null;
+      focusI = null;
+      updateZoomDisplay();
+      renderGraph();
+    }
+
     window.addEventListener('resize', () => {
       syncCanvasSize();
       renderGraph();
     });
 
+    // Periodically refresh so points older than MINIMIZE_AFTER_MS transition to minimized markers
+    setInterval(() => {
+      if (dataPoints.length > 0) renderGraph();
+    }, 1000);
+
     window.addEventListener('load', () => {
       syncCanvasSize();
       updateUI();
+      updateZoomDisplay();
       renderGraph();
       autoConnect();
 
@@ -406,6 +470,11 @@
       const v = parseFloat(vRaw);
       const i = parseFloat(iRaw);
       if (!Number.isNaN(v) && !Number.isNaN(i) && v >= 0) {
+        // Do not plot for idle points: only plot when voltage changes
+        if (lastPlottedVoltage !== null && Math.abs(v - lastPlottedVoltage) < VOLTAGE_CHANGE_THRESHOLD) {
+          return;
+        }
+        lastPlottedVoltage = v;
         addDataPoint(v, i);
       }
     }
@@ -439,8 +508,8 @@
       noReadingsBanner.classList.toggle('hidden', hasReadings);
 
       if (isConnected) {
-        statusBadge.className = 'inline-flex items-center px-3 py-1.5 rounded-lg text-[11px] sm:text-xs font-mono-tech font-medium bg-lime-400/10 text-lime-300 border border-lime-400/30 whitespace-nowrap';
-        statusDot.className = 'w-2 h-2 rounded-full bg-lime-400 mr-2 animate-ping shrink-0';
+        statusBadge.className = 'inline-flex items-center px-3 py-1.5 rounded-lg text-[11px] sm:text-xs font-mono-tech font-medium bg-purple-400/15 text-purple-200 border border-purple-400/40 whitespace-nowrap';
+        statusDot.className = 'w-2 h-2 rounded-full bg-purple-300 mr-2 animate-ping shrink-0';
         statusText.textContent = hasReadings ? 'ONLINE // STREAMING' : 'ONLINE // WAITING';
         btnConnectText.textContent = 'Disconnect';
         serialDetail.textContent = '9600 8N1 · CONNECTED';
@@ -448,23 +517,24 @@
         btnConnectText.textContent = 'Connect OTG / USB';
         serialDetail.textContent = '9600 8N1 · DISCONNECTED';
         if (!hasReadings) {
-          statusBadge.className = 'inline-flex items-center px-3 py-1.5 rounded-lg text-[11px] sm:text-xs font-mono-tech font-medium bg-amber-500/10 text-amber-300 border border-amber-500/30 whitespace-nowrap';
-          statusDot.className = 'w-2 h-2 rounded-full bg-amber-400 mr-2 shrink-0';
+          statusBadge.className = 'inline-flex items-center px-3 py-1.5 rounded-lg text-[11px] sm:text-xs font-mono-tech font-medium bg-purple-500/10 text-purple-200 border border-purple-500/30 whitespace-nowrap';
+          statusDot.className = 'w-2 h-2 rounded-full bg-purple-400 mr-2 shrink-0';
           statusText.textContent = 'NO READINGS TAKEN';
         } else {
           statusBadge.className = 'inline-flex items-center px-3 py-1.5 rounded-lg text-[11px] sm:text-xs font-mono-tech font-medium bg-white/5 text-slate-300 border border-white/15 whitespace-nowrap';
-          statusDot.className = 'w-2 h-2 rounded-full bg-amber-400 mr-2 shrink-0';
+          statusDot.className = 'w-2 h-2 rounded-full bg-purple-400 mr-2 shrink-0';
           statusText.textContent = `CAPTURED // ${dataPoints.length} PTS`;
         }
       }
 
       graphSubtitle.textContent = hasReadings
-        ? `Displaying ${dataPoints.length} sampled V–I coordinate(s)`
+        ? `Displaying ${dataPoints.length} voltage-change point(s) (idle readings skipped)`
         : 'No readings taken so far — connect hardware via USB/OTG to plot';
     }
 
     function clearData() {
       dataPoints = [];
+      lastPlottedVoltage = null;
       valVoltage.textContent = '--';
       valCurrent.textContent = '--';
       valCount.textContent = '0';
@@ -505,26 +575,26 @@
 V_LED = [${vVec}]; % Voltage across LED (V)
 I_mA  = [${iVec}]; % Diode current (mA)
 
-figure('Name', 'de:volt LED V-I Curve', 'Color', [0.04 0.05 0.07]);
+figure('Name', 'de:volt LED V-I Curve', 'Color', [0.04 0.03 0.06]);
 ax = gca;
-ax.Color = [0.06 0.07 0.09];
-ax.XColor = [0.85 0.85 0.85];
-ax.YColor = [0.85 0.85 0.85];
-ax.GridColor = [0.96 0.62 0.04];
-ax.GridAlpha = 0.2;
+ax.Color = [0.06 0.05 0.09];
+ax.XColor = [0.85 0.85 0.9];
+ax.YColor = [0.85 0.85 0.9];
+ax.GridColor = [0.66 0.33 0.97];
+ax.GridAlpha = 0.22;
 
-plot(V_LED, I_mA, '-x', 'Color', [0.98 0.75 0.14], 'LineWidth', 1.25, 'MarkerSize', 7);
+plot(V_LED, I_mA, '-x', 'Color', [0.75 0.52 0.99], 'LineWidth', 1.25, 'MarkerSize', 7);
 grid on;
 xlabel('LED Voltage V_{LED} (V)', 'FontWeight', 'bold', 'Color', 'w');
 ylabel('Current I (mA)', 'FontWeight', 'bold', 'Color', 'w');
-title('LED Forward V–I Characteristic Curve', 'FontWeight', 'bold', 'Color', [0.98 0.75 0.14]);
+title('LED Forward V–I Characteristic Curve', 'FontWeight', 'bold', 'Color', [0.75 0.52 0.99]);
 
 idxKnee = find(I_mA >= 0.5, 1, 'first');
 if ~isempty(idxKnee)
     hold on;
-    plot(V_LED(idxKnee), I_mA(idxKnee), '+', 'Color', [0.85 0.98 0.62], 'MarkerSize', 12, 'LineWidth', 1.8);
+    plot(V_LED(idxKnee), I_mA(idxKnee), '+', 'Color', [0.91 0.83 1.0], 'MarkerSize', 12, 'LineWidth', 1.8);
     text(V_LED(idxKnee), I_mA(idxKnee), sprintf('  Knee ~ %.2f V', V_LED(idxKnee)), ...
-         'Color', [0.85 0.98 0.62], 'VerticalAlignment', 'bottom');
+         'Color', [0.91 0.83 1.0], 'VerticalAlignment', 'bottom');
     hold off;
 end`;
     }
@@ -554,8 +624,36 @@ end`;
       URL.revokeObjectURL(url);
     }
 
-    function drawCrossMarker(cx, cy, size, color, lineWidth) {
+    function getAxisBounds() {
+      let baseMaxV = 3.0;
+      let baseMaxI = 10.0;
+      if (dataPoints.length > 0) {
+        baseMaxV = Math.max(3.0, Math.ceil(Math.max(...dataPoints.map(p => p.v)) * 1.1 * 10) / 10);
+        baseMaxI = Math.max(10.0, Math.ceil(Math.max(...dataPoints.map(p => p.i)) * 1.1));
+      }
+
+      if (zoomLevel <= 1.0 || focusV === null || focusI === null) {
+        return { minV: 0, maxV: baseMaxV, minI: 0, maxI: baseMaxI };
+      }
+
+      const spanV = baseMaxV / zoomLevel;
+      const spanI = baseMaxI / zoomLevel;
+      let minV = focusV - spanV / 2;
+      let maxV = focusV + spanV / 2;
+      let minI = focusI - spanI / 2;
+      let maxI = focusI + spanI / 2;
+
+      if (minV < 0) { maxV -= minV; minV = 0; }
+      if (maxV > baseMaxV) { minV = Math.max(0, minV - (maxV - baseMaxV)); maxV = baseMaxV; }
+      if (minI < 0) { maxI -= minI; minI = 0; }
+      if (maxI > baseMaxI) { minI = Math.max(0, minI - (maxI - baseMaxI)); maxI = baseMaxI; }
+
+      return { minV, maxV, minI, maxI };
+    }
+
+    function drawCrossMarker(cx, cy, size, color, lineWidth, alpha = 1) {
       ctx.save();
+      ctx.globalAlpha = alpha;
       ctx.strokeStyle = color;
       ctx.lineWidth = lineWidth;
       ctx.beginPath();
@@ -582,6 +680,30 @@ end`;
       ctx.restore();
     }
 
+    function drawStarMarker(cx, cy, outerR, color) {
+      const spikes = 5;
+      const innerR = outerR * 0.45;
+      let rot = (Math.PI / 2) * 3;
+      const step = Math.PI / spikes;
+
+      ctx.save();
+      ctx.beginPath();
+      ctx.moveTo(cx, cy - outerR);
+      for (let i = 0; i < spikes; i++) {
+        ctx.lineTo(cx + Math.cos(rot) * outerR, cy + Math.sin(rot) * outerR);
+        rot += step;
+        ctx.lineTo(cx + Math.cos(rot) * innerR, cy + Math.sin(rot) * innerR);
+        rot += step;
+      }
+      ctx.lineTo(cx, cy - outerR);
+      ctx.closePath();
+      ctx.fillStyle = color;
+      ctx.shadowColor = color;
+      ctx.shadowBlur = 10;
+      ctx.fill();
+      ctx.restore();
+    }
+
     function renderGraph() {
       syncCanvasSize();
       const dpr = window.devicePixelRatio || 1;
@@ -589,8 +711,7 @@ end`;
       const h = canvas.height;
       ctx.clearRect(0, 0, w, h);
 
-      // Deep carbon oscilloscope surface
-      ctx.fillStyle = '#0B0D12';
+      ctx.fillStyle = '#0A0810';
       ctx.fillRect(0, 0, w, h);
 
       const isCompact = w < 520 * dpr;
@@ -601,18 +722,15 @@ end`;
       const gw = Math.max(10, w - padL - padR);
       const gh = Math.max(10, h - padT - padB);
 
-      let maxV = 3.0;
-      let maxI = 10.0;
-      if (dataPoints.length > 0) {
-        maxV = Math.max(3.0, Math.ceil(Math.max(...dataPoints.map(p => p.v)) * 1.1 * 10) / 10);
-        maxI = Math.max(10.0, Math.ceil(Math.max(...dataPoints.map(p => p.i)) * 1.1));
-      }
+      const { minV, maxV, minI, maxI } = getAxisBounds();
+      const rangeV = Math.max(0.001, maxV - minV);
+      const rangeI = Math.max(0.001, maxI - minI);
 
-      const mapX = v => padL + (v / maxV) * gw;
-      const mapY = i => padT + gh - (i / maxI) * gh;
+      const mapX = v => padL + ((v - minV) / rangeV) * gw;
+      const mapY = i => padT + gh - ((i - minI) / rangeI) * gh;
 
-      // Subtle technical gridlines
-      ctx.strokeStyle = 'rgba(245, 158, 11, 0.10)';
+      // Subtle purple gridlines
+      ctx.strokeStyle = 'rgba(168, 85, 247, 0.12)';
       ctx.lineWidth = 1 * dpr;
       ctx.fillStyle = '#94A3B8';
       ctx.font = `${(isCompact ? 9.5 : 11) * dpr}px "JetBrains Mono", monospace`;
@@ -620,7 +738,7 @@ end`;
       ctx.textAlign = 'right';
       ctx.textBaseline = 'middle';
       for (let s = 0; s <= 5; s++) {
-        const val = (maxI / 5) * s;
+        const val = minI + (rangeI / 5) * s;
         const y = mapY(val);
         ctx.beginPath();
         ctx.moveTo(padL, y);
@@ -633,7 +751,7 @@ end`;
       ctx.textAlign = 'center';
       ctx.textBaseline = 'top';
       for (let s = 0; s <= xSteps; s++) {
-        const val = (maxV / xSteps) * s;
+        const val = minV + (rangeV / xSteps) * s;
         const x = mapX(val);
         ctx.beginPath();
         ctx.moveTo(x, padT);
@@ -643,7 +761,7 @@ end`;
       }
 
       // Primary axes
-      ctx.strokeStyle = 'rgba(251, 191, 36, 0.45)';
+      ctx.strokeStyle = 'rgba(192, 132, 252, 0.5)';
       ctx.lineWidth = 1.3 * dpr;
       ctx.beginPath();
       ctx.moveTo(padL, padT);
@@ -664,19 +782,24 @@ end`;
       ctx.restore();
 
       if (dataPoints.length === 0) {
-        ctx.fillStyle = 'rgba(251, 191, 36, 0.65)';
+        ctx.fillStyle = 'rgba(192, 132, 252, 0.72)';
         ctx.font = `500 ${(isCompact ? 12 : 14) * dpr}px "JetBrains Mono", monospace`;
         ctx.fillText('// NO READINGS TAKEN SO FAR', padL + gw / 2, padT + gh / 2);
         return;
       }
 
-      // Thinner high-voltage amber trace
+      // Clip inside plot area so zoom never spills over axes
+      ctx.save();
+      ctx.beginPath();
+      ctx.rect(padL, padT, gw, gh);
+      ctx.clip();
+
       const sorted = [...dataPoints].sort((a, b) => a.v - b.v);
       ctx.save();
       ctx.beginPath();
-      ctx.strokeStyle = '#FBBF24';
+      ctx.strokeStyle = '#C084FC';
       ctx.lineWidth = 1.25 * dpr;
-      ctx.shadowColor = 'rgba(245, 158, 11, 0.45)';
+      ctx.shadowColor = 'rgba(168, 85, 247, 0.45)';
       ctx.shadowBlur = 6 * dpr;
       sorted.forEach((pt, idx) => {
         const x = mapX(pt.v);
@@ -687,15 +810,41 @@ end`;
       ctx.stroke();
       ctx.restore();
 
-      // Cross symbols (x) for recorded data points
-      const crossSize = 3.5 * dpr;
-      sorted.forEach(pt => {
-        drawCrossMarker(mapX(pt.v), mapY(pt.i), crossSize, '#F59E0B', 1.3 * dpr);
-      });
+      // Find point closest to zoom focus so it can be rendered as a Star when zoomed
+      let starPoint = null;
+      if (zoomLevel > 1.0 && focusV !== null && focusI !== null) {
+        let bestDist = Infinity;
+        for (const pt of dataPoints) {
+          const d = Math.hypot((pt.v - focusV) / rangeV, (pt.i - focusI) / rangeI);
+          if (d < bestDist) {
+            bestDist = d;
+            starPoint = pt;
+          }
+        }
+      }
+
+      const now = Date.now();
+      const latest = dataPoints[dataPoints.length - 1];
+
+      // Draw recorded points; minimize older ones after MINIMIZE_AFTER_MS
+      for (const pt of sorted) {
+        const age = now - pt.t;
+        const isMinimized = age >= MINIMIZE_AFTER_MS;
+        const markerSize = (isMinimized ? 1.8 : 3.6) * dpr;
+        const markerAlpha = isMinimized ? 0.42 : 1.0;
+        const markerColor = isMinimized ? '#9333EA' : '#A855F7';
+        drawCrossMarker(mapX(pt.v), mapY(pt.i), markerSize, markerColor, (isMinimized ? 0.9 : 1.3) * dpr, markerAlpha);
+      }
 
       // Live active reading reticle (+)
-      const latest = dataPoints[dataPoints.length - 1];
-      drawPlusReticle(mapX(latest.v), mapY(latest.i), 6 * dpr, '#D9F99D', 1.8 * dpr);
+      drawPlusReticle(mapX(latest.v), mapY(latest.i), 6 * dpr, '#F0ABFC', 1.8 * dpr);
+
+      // Star marker at the zoomed point
+      if (starPoint) {
+        drawStarMarker(mapX(starPoint.v), mapY(starPoint.i), 7.5 * dpr, '#FBBF24');
+      }
+
+      ctx.restore();
     }
 
     function showTooltipAt(clientX, clientY) {
@@ -713,13 +862,14 @@ end`;
       const gw = Math.max(10, w - padL - padR);
       const gh = Math.max(10, h - padT - padB);
 
-      const maxV = Math.max(3.0, Math.ceil(Math.max(...dataPoints.map(p => p.v)) * 1.1 * 10) / 10);
-      const maxI = Math.max(10.0, Math.ceil(Math.max(...dataPoints.map(p => p.i)) * 1.1));
+      const { minV, maxV, minI, maxI } = getAxisBounds();
+      const rangeV = Math.max(0.001, maxV - minV);
+      const rangeI = Math.max(0.001, maxI - minI);
 
       let nearest = null, best = Infinity;
       dataPoints.forEach(pt => {
-        const px = padL + (pt.v / maxV) * gw;
-        const py = padT + gh - (pt.i / maxI) * gh;
+        const px = padL + ((pt.v - minV) / rangeV) * gw;
+        const py = padT + gh - ((pt.i - minI) / rangeI) * gh;
         const dist = Math.hypot(mx * dpr - px, my * dpr - py);
         if (dist < best) { best = dist; nearest = pt; }
       });
@@ -733,6 +883,27 @@ end`;
         tooltip.classList.add('hidden');
       }
     }
+
+    canvas.addEventListener('wheel', e => {
+      e.preventDefault();
+      const rect = canvas.getBoundingClientRect();
+      const dpr = window.devicePixelRatio || 1;
+      const isCompact = canvas.width < 520 * dpr;
+      const padL = (isCompact ? 50 : 68);
+      const padR = (isCompact ? 18 : 32);
+      const padT = (isCompact ? 26 : 36);
+      const padB = (isCompact ? 48 : 58);
+      const gw = Math.max(10, rect.width - padL - padR);
+      const gh = Math.max(10, rect.height - padT - padB);
+
+      const mx = e.clientX - rect.left;
+      const my = e.clientY - rect.top;
+      const { minV, maxV, minI, maxI } = getAxisBounds();
+      const cursorV = minV + Math.max(0, Math.min(1, (mx - padL) / gw)) * (maxV - minV);
+      const cursorI = minI + Math.max(0, Math.min(1, 1 - (my - padT) / gh)) * (maxI - minI);
+
+      zoomGraph(e.deltaY < 0 ? 1.25 : 0.8, cursorV, cursorI);
+    }, { passive: false });
 
     canvas.addEventListener('mousemove', e => showTooltipAt(e.clientX, e.clientY));
     canvas.addEventListener('touchstart', e => {
