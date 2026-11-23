@@ -10,16 +10,16 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
     body { font-family: 'Inter', sans-serif; }
-    canvas { touch-action: none; }
+    canvas { touch-action: none; display: block; width: 100%; height: 400px; }
   </style>
 </head>
-<body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col antialiased selection:bg-blue-500 selection:text-white">
+<body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col antialiased">
 
   <!-- TOP BAR -->
   <header class="bg-white border-b border-slate-200 sticky top-0 z-30 shadow-sm">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
       <div class="flex items-center space-x-3">
-        <div class="w-10 h-10 rounded-xl bg-blue-600 flex items-center justify-center text-white shadow-md shadow-blue-500/20">
+        <div class="w-10 h-10 rounded-xl bg-blue-600 flex items-center justify-center text-white shadow-md">
           <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
           </svg>
@@ -36,25 +36,17 @@
           <span id="statusText">No readings taken so far</span>
         </div>
 
-        <button id="btnConnect" onclick="toggleConnect()" class="inline-flex items-center px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white font-medium text-sm transition shadow-sm">
+        <button id="btnConnect" onclick="toggleConnect()" class="inline-flex items-center px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-medium text-sm transition shadow-sm">
           <span id="btnConnectText">Connect Arduino</span>
         </button>
       </div>
     </div>
   </header>
 
-  <!-- UNSUPPORTED BROWSER BANNER -->
-  <div id="unsupportedBanner" class="hidden bg-amber-50 border-b border-amber-200 px-4 py-3 text-amber-900 text-sm">
-    <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-2">
-      <span><strong>Web Serial unavailable:</strong> Use Chrome, Edge, or Opera (with USB OTG on Android) to read directly from Arduino, or generate a MATLAB script below.</span>
-      <button onclick="openMatlabModal()" class="px-3 py-1 bg-amber-200 hover:bg-amber-300 text-amber-950 rounded font-medium text-xs transition">Open MATLAB Script</button>
-    </div>
-  </div>
-
   <!-- MAIN CONTENT -->
   <main class="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6 lg:p-8 flex flex-col space-y-6">
 
-    <!-- NO READINGS BANNER (Always visible until data arrives) -->
+    <!-- NO READINGS BANNER -->
     <div id="noReadingsBanner" class="bg-white border border-slate-200 rounded-2xl p-4 sm:px-6 flex flex-wrap items-center justify-between gap-4 shadow-sm">
       <div class="flex items-center space-x-3">
         <span class="w-2.5 h-2.5 rounded-full bg-slate-400"></span>
@@ -103,11 +95,11 @@
       </div>
     </div>
 
-    <!-- GRAPH & DETAILS CARD -->
-    <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-4 sm:p-6 flex-1 flex flex-col">
+    <!-- GRAPH CARD -->
+    <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-4 sm:p-6 flex flex-col">
       <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
         <div>
-          <h2 class="text-lg font-bold text-slate-900">V–I Characteristic Curve (LED)</h2>
+          <h2 class="text-lg font-bold text-slate-900">Live V–I Characteristic Curve (LED)</h2>
           <p id="graphSubtitle" class="text-xs text-slate-500">No readings taken so far — waiting for Arduino serial data</p>
         </div>
 
@@ -124,40 +116,34 @@
         </div>
       </div>
 
-      <div class="relative flex-1 min-h-[360px] sm:min-h-[430px] w-full bg-slate-50 rounded-xl border border-slate-200 overflow-hidden">
-        <canvas id="viCanvas" class="w-full h-full block cursor-crosshair"></canvas>
+      <div id="canvasWrapper" class="relative w-full bg-white rounded-xl border border-slate-200 overflow-hidden" style="height: 400px;">
+        <canvas id="viCanvas"></canvas>
         <div id="canvasTooltip" class="pointer-events-none absolute hidden px-3 py-1.5 rounded-lg bg-slate-900/90 text-white text-xs font-mono shadow-lg -translate-x-1/2 -translate-y-full mb-2 z-10 whitespace-nowrap">
           <span id="tooltipText">V: 0.000 V | I: 0.000 mA</span>
         </div>
       </div>
 
       <div class="mt-3 flex flex-wrap items-center justify-between text-xs text-slate-500 px-1 gap-2">
-        <div>Format expected from Arduino: <span class="font-mono text-slate-700">V_LED,I_mA</span> (e.g., <span class="font-mono text-slate-700">2.15,4.80</span>)</div>
+        <div>Expected Arduino output: <span class="font-mono text-slate-700">V_LED,I_mA</span> (e.g., <span class="font-mono text-slate-700">2.840,9.820</span>)</div>
         <div>Serial: <span id="serialDetail" class="font-mono text-slate-700">9600 8N1 · Not connected</span></div>
       </div>
     </div>
   </main>
 
-  <!-- MATLAB SCRIPT MODAL -->
-  <div id="matlabModal" class="hidden fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-xs flex items-center justify-center p-4">
+  <!-- MATLAB MODAL -->
+  <div id="matlabModal" class="hidden fixed inset-0 z-50 bg-slate-900/50 flex items-center justify-center p-4">
     <div class="bg-white rounded-2xl border border-slate-200 shadow-xl max-w-2xl w-full p-5 sm:p-6 space-y-4">
       <div class="flex items-center justify-between">
         <div>
-          <h3 class="text-base font-bold text-slate-900">MATLAB Plot Script (`plot_led_vi_curve.m`)</h3>
-          <p id="matlabNote" class="text-xs text-slate-500">Includes your recorded readings when available.</p>
+          <h3 class="text-base font-bold text-slate-900">MATLAB Plot Script (plot_led_vi_curve.m)</h3>
+          <p id="matlabNote" class="text-xs text-slate-500">Includes your recorded readings.</p>
         </div>
         <button onclick="closeMatlabModal()" class="text-slate-400 hover:text-slate-700 text-sm font-semibold px-2 py-1">✕</button>
       </div>
-
       <pre id="matlabCodeBlock" class="bg-slate-900 text-slate-100 text-xs font-mono p-4 rounded-xl overflow-x-auto max-h-72"></pre>
-
-      <div class="flex flex-wrap justify-end gap-2">
-        <button onclick="copyMatlabCode()" class="px-4 py-2 rounded-lg border border-slate-200 hover:bg-slate-50 text-slate-700 text-xs font-semibold transition">
-          Copy Code
-        </button>
-        <button onclick="downloadMatlabScript()" class="px-4 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold transition">
-          Download .m File
-        </button>
+      <div class="flex justify-end gap-2">
+        <button onclick="copyMatlabCode()" class="px-4 py-2 rounded-lg border border-slate-200 hover:bg-slate-50 text-slate-700 text-xs font-semibold">Copy Code</button>
+        <button onclick="downloadMatlabScript()" class="px-4 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold">Download .m File</button>
       </div>
     </div>
   </div>
@@ -176,24 +162,37 @@
     const noReadingsBanner = document.getElementById('noReadingsBanner');
     const graphSubtitle = document.getElementById('graphSubtitle');
     const serialDetail = document.getElementById('serialDetail');
-    const unsupportedBanner = document.getElementById('unsupportedBanner');
 
     const valVoltage = document.getElementById('valVoltage');
     const valCurrent = document.getElementById('valCurrent');
     const valCount = document.getElementById('valCount');
     const valKnee = document.getElementById('valKnee');
 
+    const wrapper = document.getElementById('canvasWrapper');
     const canvas = document.getElementById('viCanvas');
     const ctx = canvas.getContext('2d');
     const tooltip = document.getElementById('canvasTooltip');
     const tooltipText = document.getElementById('tooltipText');
 
-    window.addEventListener('load', () => {
-      if (!('serial' in navigator)) {
-        unsupportedBanner.classList.remove('hidden');
+    function syncCanvasSize() {
+      const dpr = window.devicePixelRatio || 1;
+      const w = wrapper.clientWidth || 800;
+      const h = wrapper.clientHeight || 400;
+      if (canvas.width !== Math.floor(w * dpr) || canvas.height !== Math.floor(h * dpr)) {
+        canvas.width = Math.floor(w * dpr);
+        canvas.height = Math.floor(h * dpr);
       }
-      setupCanvasResizer();
+    }
+
+    window.addEventListener('resize', () => {
+      syncCanvasSize();
+      renderGraph();
+    });
+
+    window.addEventListener('load', () => {
+      syncCanvasSize();
       updateUI();
+      renderGraph();
       autoConnect();
 
       if ('serial' in navigator) {
@@ -206,12 +205,8 @@
       if (!('serial' in navigator) || isConnected) return;
       try {
         const ports = await navigator.serial.getPorts();
-        if (ports.length > 0) {
-          await connectToPort(ports[0]);
-        }
-      } catch (err) {
-        console.warn('Auto-connect skipped:', err);
-      }
+        if (ports.length > 0) await connectToPort(ports[0]);
+      } catch (_) {}
     }
 
     async function toggleConnect() {
@@ -226,9 +221,7 @@
       try {
         const selectedPort = await navigator.serial.requestPort();
         await connectToPort(selectedPort);
-      } catch (err) {
-        console.log('Port selection cancelled or failed:', err);
-      }
+      } catch (_) {}
     }
 
     async function connectToPort(selectedPort) {
@@ -258,8 +251,7 @@
           if (done) break;
           if (value) parseSerialLine(value);
         }
-      } catch (err) {
-        console.error('Serial read error:', err);
+      } catch (_) {
       } finally {
         reader.releaseLock();
         await pipeDone;
@@ -302,19 +294,13 @@
         : '--';
 
       updateUI();
-      requestAnimationFrame(renderGraph);
+      renderGraph();
     }
 
     async function handleDisconnect() {
       keepReading = false;
-      if (reader) {
-        try { await reader.cancel(); } catch (_) {}
-        reader = null;
-      }
-      if (port) {
-        try { await port.close(); } catch (_) {}
-        port = null;
-      }
+      if (reader) { try { await reader.cancel(); } catch (_) {} reader = null; }
+      if (port) { try { await port.close(); } catch (_) {} port = null; }
       isConnected = false;
       updateUI();
       renderGraph();
@@ -382,8 +368,6 @@
       const iVec = hasData ? sorted.map(p => p.i.toFixed(4)).join(', ') : '0.00, 0.00, 0.02, 0.25, 2.10, 9.40, 20.50';
 
       return `% LED V-I Characteristic Curve Plotter
-% Generated from LED V-I Curve Analyzer
-
 V_LED = [${vVec}]; % Voltage across LED (V)
 I_mA  = [${iVec}]; % Diode current (mA)
 
@@ -430,18 +414,8 @@ end`;
       URL.revokeObjectURL(url);
     }
 
-    function setupCanvasResizer() {
-      const ro = new ResizeObserver(() => {
-        const dpr = window.devicePixelRatio || 1;
-        const rect = canvas.getBoundingClientRect();
-        canvas.width = Math.max(1, Math.floor(rect.width * dpr));
-        canvas.height = Math.max(1, Math.floor(rect.height * dpr));
-        renderGraph();
-      });
-      ro.observe(canvas.parentElement);
-    }
-
     function renderGraph() {
+      syncCanvasSize();
       const dpr = window.devicePixelRatio || 1;
       const w = canvas.width;
       const h = canvas.height;
@@ -540,7 +514,7 @@ end`;
 
       const latest = dataPoints[dataPoints.length - 1];
       ctx.beginPath();
-      ctx.arc(mapX(latest.v), mapY(latest.i), 4.5 * dpr, 0, Math.PI * 2);
+      ctx.arc(mapX(latest.v), mapY(latest.i), 5 * dpr, 0, Math.PI * 2);
       ctx.fillStyle = '#ef4444';
       ctx.fill();
     }
