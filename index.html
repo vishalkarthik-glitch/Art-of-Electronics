@@ -29,11 +29,10 @@
       --glow-1: rgba(168, 85, 247, 0.14);
       --glow-2: rgba(192, 132, 252, 0.08);
       --plot-grid: rgba(168, 85, 247, 0.15);
-      --plot-axis: rgba(192, 132, 252, 0.5);
+      --plot-axis: rgba(192, 132, 252, 0.55);
       --plot-line: #C084FC;
-      --plot-ref: rgba(168, 85, 247, 0.32);
+      --plot-ref: rgba(168, 85, 247, 0.34);
       --plot-live: #F0ABFC;
-      --plot-focus: #FCD34D;
     }
 
     html[data-theme="light"] {
@@ -57,9 +56,8 @@
       --plot-grid: rgba(126, 34, 206, 0.14);
       --plot-axis: rgba(107, 33, 168, 0.55);
       --plot-line: #7E22CE;
-      --plot-ref: rgba(126, 34, 206, 0.34);
+      --plot-ref: rgba(126, 34, 206, 0.36);
       --plot-live: #9333EA;
-      --plot-focus: #D97706;
     }
 
     body {
@@ -150,7 +148,7 @@
         <div class="min-w-0">
           <div class="flex items-center gap-2 flex-wrap">
             <span class="font-mono-tech text-xs font-bold tracking-widest uppercase px-2 py-0.5 rounded bg-purple-500/15 text-purple-600 dark:text-purple-300 border border-purple-500/30">de:volt</span>
-            <h1 class="font-bold text-sm sm:text-lg tracking-tight truncate">LED I–V Characteristic Analyzer (45&deg; Equal-Scale)</h1>
+            <h1 class="font-bold text-sm sm:text-lg tracking-tight truncate">LED I–V Characteristic Analyzer (y = x Origin Plot)</h1>
           </div>
           <p class="text-xs sm:text-sm font-mono-tech font-semibold mt-0.5 text-purple-700 dark:text-purple-200">
             PRADEEP S <span class="text-purple-500 dark:text-purple-400">(2026303080)</span> &nbsp;&bull;&nbsp; VISHAL KARTHIK R P <span class="text-purple-500 dark:text-purple-400">(2026303060)</span>
@@ -186,7 +184,7 @@
         <div>
           <p class="text-sm font-bold text-purple-700 dark:text-purple-200 tracking-wide uppercase font-mono-tech">Standby // No Readings Taken So Far</p>
           <p class="text-xs opacity-85 mt-1 leading-relaxed">
-            Connect via <strong>USB / Android OTG</strong> in <strong>Chrome or Edge</strong> and select <strong>Connect OTG / USB</strong>. X-axis = <strong>Current I (mA)</strong>, Y-axis = <strong>Voltage V_LED (V)</strong>. Plots when &Delta;V &ge; 0.005 V. Stream format: <span class="font-mono-tech px-1.5 py-0.5 rounded bg-purple-500/10 border border-purple-500/25">V_LED,I_mA</span> @ 9600 baud.
+            Connect via <strong>USB / Android OTG</strong> in <strong>Chrome or Edge</strong> and select <strong>Connect OTG / USB</strong>. Full-width plot anchored at <strong>Origin (0, 0)</strong> with X = <strong>Current I (mA)</strong> and Y = <strong>Voltage V_LED (V)</strong>. Stream format: <span class="font-mono-tech px-1.5 py-0.5 rounded bg-purple-500/10 border border-purple-500/25">V_LED,I_mA</span> @ 9600 baud.
           </p>
         </div>
       </div>
@@ -235,63 +233,57 @@
       </div>
     </div>
 
-    <!-- OSCILLOSCOPE / GRAPH PANEL -->
+    <!-- FULL-WIDTH OSCILLOSCOPE / GRAPH PANEL -->
     <div class="devolt-glass rounded-2xl p-4 sm:p-6 flex flex-col">
       <div class="flex flex-col xl:flex-row xl:items-center justify-between gap-3 mb-3">
         <div>
           <div class="flex items-center gap-2 flex-wrap">
             <span class="w-2 h-2 rounded-full bg-purple-500"></span>
-            <h2 class="text-base sm:text-lg font-bold tracking-tight">I–V Plot (X = Current I, Y = Voltage V_LED &middot; 45&deg; Diagonal)</h2>
+            <h2 class="text-base sm:text-lg font-bold tracking-tight">I–V Characteristic Plot (Origin 0,0 &middot; Exact y = x 45&deg; Slope)</h2>
           </div>
           <p id="graphSubtitle" class="text-xs font-mono-tech opacity-75 mt-0.5">No readings taken so far — awaiting voltage sweep changes</p>
         </div>
 
         <div class="flex flex-wrap items-center gap-2">
-          <!-- Interaction mode: Pan vs Box Zoom -->
+          <!-- Zoom Controls (Anchored at Origin 0,0) -->
           <div class="inline-flex items-center rounded-lg border border-purple-500/30 overflow-hidden">
-            <button id="btnModePan" onclick="setInteractMode('pan')" class="btn-ghost active-mode px-2.5 py-1.5 text-xs font-mono-tech font-semibold cursor-pointer">Pan</button>
-            <button id="btnModeBox" onclick="setInteractMode('box')" class="btn-ghost px-2.5 py-1.5 text-xs font-mono-tech font-semibold border-l border-purple-500/20 cursor-pointer">Box Zoom</button>
-          </div>
-
-          <!-- Zoom & 45° lock controls -->
-          <div class="inline-flex items-center rounded-lg border border-purple-500/30 overflow-hidden">
-            <button onclick="zoomGraph(1.25)" title="Zoom In" class="btn-ghost px-2.5 py-1.5 text-xs font-mono-tech font-bold cursor-pointer">+</button>
+            <button onclick="zoomGraph(1.25)" title="Zoom In from Origin" class="btn-ghost px-2.5 py-1.5 text-xs font-mono-tech font-bold cursor-pointer">+</button>
             <span id="zoomLabel" class="px-2 py-1.5 text-[11px] font-mono-tech font-semibold border-x border-purple-500/20">1.0x</span>
-            <button onclick="zoomGraph(0.8)" title="Zoom Out" class="btn-ghost px-2.5 py-1.5 text-xs font-mono-tech font-bold cursor-pointer">&minus;</button>
-            <button onclick="resetZoom()" title="Reset View" class="btn-ghost px-2.5 py-1.5 text-[11px] font-mono-tech border-l border-purple-500/20 cursor-pointer">1:1</button>
+            <button onclick="zoomGraph(0.8)" title="Zoom Out to Origin" class="btn-ghost px-2.5 py-1.5 text-xs font-mono-tech font-bold cursor-pointer">&minus;</button>
+            <button onclick="resetZoom()" title="Reset Zoom" class="btn-ghost px-2.5 py-1.5 text-[11px] font-mono-tech border-l border-purple-500/20 cursor-pointer">1:1</button>
           </div>
 
-          <button id="btnDiagToggle" onclick="toggleDiagGuide()" class="btn-ghost active-mode px-3 py-1.5 rounded-lg text-xs font-mono-tech font-semibold cursor-pointer">45&deg; Guide</button>
-          <button id="btnAutoFollow" onclick="toggleAutoFollow()" class="btn-ghost active-mode px-3 py-1.5 rounded-lg text-xs font-mono-tech font-semibold cursor-pointer">Auto-Follow</button>
+          <button id="btnDiagToggle" onclick="toggleDiagGuide()" class="btn-ghost active-mode px-3 py-1.5 rounded-lg text-xs font-mono-tech font-semibold cursor-pointer">y = x Guide</button>
           <button onclick="openMatlabModal()" class="btn-ghost px-3 py-1.5 rounded-lg text-xs font-mono-tech font-semibold cursor-pointer">MATLAB (.m)</button>
           <button onclick="exportCSV()" class="btn-ghost px-3 py-1.5 rounded-lg text-xs font-mono-tech font-semibold cursor-pointer">CSV</button>
           <button onclick="clearData()" class="btn-ghost px-3 py-1.5 rounded-lg text-xs font-mono-tech font-semibold cursor-pointer">Clear</button>
         </div>
       </div>
 
-      <!-- Flexible Axis & Scale Controls Bar -->
+      <!-- Flexible Axis & Grid Controls Bar -->
       <div class="flex flex-wrap items-center justify-between gap-3 px-3 py-2 mb-3 rounded-xl border border-purple-500/20 bg-purple-500/5 text-xs font-mono-tech">
         <div class="flex flex-wrap items-center gap-3">
           <label class="inline-flex items-center gap-1.5">
-            <span class="opacity-75">Max Axis Span:</span>
-            <input id="inputMaxSpan" type="number" step="0.5" min="0.5" max="100" value="5.0" onchange="updateMaxSpan(this.value)" class="w-16 px-2 py-0.5 rounded border border-purple-500/30 bg-transparent font-mono-tech focus:outline-none focus:border-purple-500" />
-            <span class="opacity-70">(V &amp; mA equal)</span>
+            <span class="opacity-75">Y-Max Voltage:</span>
+            <input id="inputMaxV" type="number" step="0.5" min="0.5" max="100" value="5.0" onchange="updateBaseMaxV(this.value)" class="w-16 px-2 py-0.5 rounded border border-purple-500/30 bg-transparent font-mono-tech focus:outline-none focus:border-purple-500" />
+            <span class="opacity-70">V</span>
           </label>
           <label class="inline-flex items-center gap-1.5">
-            <span class="opacity-75">Grid Divisions:</span>
+            <span class="opacity-75">Y Divisions:</span>
             <select id="selectGridDiv" onchange="updateGridDiv(this.value)" class="px-2 py-0.5 rounded border border-purple-500/30 bg-transparent font-mono-tech focus:outline-none">
               <option value="4">4</option>
-              <option value="5">5</option>
-              <option value="6" selected>6</option>
+              <option value="5" selected>5</option>
+              <option value="6">6</option>
               <option value="8">8</option>
               <option value="10">10</option>
             </select>
           </label>
         </div>
-        <div id="cursorReadout" class="opacity-80">Cursor: I = -- mA, V = -- V</div>
+        <div id="cursorReadout" class="opacity-80">Cursor: I = 0.00 mA, V = 0.00 V</div>
       </div>
 
-      <div id="canvasWrapper" class="relative w-full h-[320px] sm:h-[400px] lg:h-[450px] rounded-xl border border-purple-500/25 overflow-hidden shadow-inner" style="background-color: var(--canvas-bg);">
+      <!-- Full-Width Rectangular Graph Canvas -->
+      <div id="canvasWrapper" class="relative w-full h-[340px] sm:h-[420px] lg:h-[470px] rounded-xl border border-purple-500/25 overflow-hidden shadow-inner" style="background-color: var(--canvas-bg);">
         <canvas id="viCanvas"></canvas>
         <div id="canvasTooltip" class="pointer-events-none absolute hidden px-3 py-1.5 rounded-lg bg-purple-950/95 text-purple-100 border border-purple-400/60 text-xs font-mono-tech shadow-xl -translate-x-1/2 -translate-y-full mb-2 z-10 whitespace-nowrap">
           <span id="tooltipText">I: 0.000 mA | V: 0.000 V</span>
@@ -299,7 +291,7 @@
       </div>
 
       <div class="mt-3.5 flex flex-col sm:flex-row sm:items-center justify-between text-xs font-mono-tech opacity-75 px-1 gap-1.5">
-        <div>45&deg; EQUAL SCALE: <span class="text-purple-600 dark:text-purple-300 font-semibold">1.25px Violet Trace</span> &bull; DRAG: <span id="dragHint" class="text-purple-600 dark:text-purple-300 font-semibold">Pan View</span> &bull; WHEEL: Zoom &bull; DBL-CLICK: Reset</div>
+        <div>ORIGIN LOCKED: <span class="text-purple-600 dark:text-purple-300 font-semibold">(0, 0)</span> &bull; EXACT <span class="text-purple-600 dark:text-purple-300 font-semibold">45&deg; (y = x)</span> GEOMETRIC SLOPE ACROSS FULL WIDTH &bull; WHEEL: Zoom</div>
         <div>PORT: <span id="serialDetail" class="font-semibold">9600 8N1 &middot; DISCONNECTED</span></div>
       </div>
     </div>
@@ -342,8 +334,8 @@
     <div class="devolt-glass rounded-2xl max-w-2xl w-full p-5 sm:p-6 space-y-4">
       <div class="flex items-center justify-between border-b border-purple-500/20 pb-3">
         <div>
-          <h3 class="text-base font-bold text-purple-600 dark:text-purple-300 font-mono-tech">MATLAB Script // plot_led_iv_45deg.m</h3>
-          <p id="matlabNote" class="text-xs opacity-75 mt-0.5">Includes your recorded readings with X = I and Y = V_LED.</p>
+          <h3 class="text-base font-bold text-purple-600 dark:text-purple-300 font-mono-tech">MATLAB Script // plot_led_iv_origin_45deg.m</h3>
+          <p id="matlabNote" class="text-xs opacity-75 mt-0.5">Includes your recorded readings anchored at (0,0) with X = I and Y = V_LED.</p>
         </div>
         <button onclick="closeMatlabModal()" class="opacity-70 hover:opacity-100 text-sm font-bold px-2 py-1 cursor-pointer">&#10005;</button>
       </div>
@@ -361,27 +353,19 @@
     const VOLTAGE_CHANGE_THRESHOLD = 0.005;
     const MINIMIZE_AFTER_MS = 8000;
 
-    // Equal-unit 45-degree state: X = Current I (mA), Y = Voltage V (V)
-    // Using identical numeric span & pixel-per-unit scale along both axes guarantees
-    // that any line with dV = dI (including I = V) renders at an exact 45-degree angle.
-    let baseSpan = 5.0; // Base full axis span in units (0 .. baseSpan)
+    // Origin-locked full-width rectangular graph with exact 45-degree (y = x) visual slope:
+    // Both axes ALWAYS start at (0, 0) at the bottom-left corner.
+    // The full width (gw) and full height (gh) of the canvas are used, and both axes
+    // share the EXACT same pixels-per-unit scale (pxPerUnit = gh / maxV), so X extends
+    // naturally across the entire wide rectangle (maxI = gw / pxPerUnit) while any line
+    // with dV = dI (y = x) runs at a true 45.0-degree angle—never steeper, never flatter.
+    let baseMaxV = 5.0;
     let zoomLevel = 1.0;
     const MIN_ZOOM = 1.0;
     const MAX_ZOOM = 12.0;
-    let centerI = 2.5;
-    let centerV = 2.5;
 
-    let gridDivisions = 6;
+    let gridDivisions = 5;
     let showDiagGuide = true;
-    let autoFollow = true;
-    let interactMode = 'pan'; // 'pan' | 'box'
-
-    // Pan & Box-Zoom drag state
-    let isDragging = false;
-    let dragStartPx = null;
-    let dragCurrPx = null;
-    let panStartCenterI = null;
-    let panStartCenterV = null;
 
     let port = null;
     let reader = null;
@@ -427,37 +411,16 @@
       applyTheme(current === 'dark' ? 'light' : 'dark');
     }
 
-    function setInteractMode(mode) {
-      interactMode = mode;
-      document.getElementById('btnModePan').classList.toggle('active-mode', mode === 'pan');
-      document.getElementById('btnModeBox').classList.toggle('active-mode', mode === 'box');
-      document.getElementById('dragHint').textContent = mode === 'pan' ? 'Pan View' : 'Drag Box Zoom';
-      canvas.style.cursor = mode === 'pan' ? 'grab' : 'crosshair';
-    }
-
     function toggleDiagGuide() {
       showDiagGuide = !showDiagGuide;
       document.getElementById('btnDiagToggle').classList.toggle('active-mode', showDiagGuide);
       renderGraph();
     }
 
-    function toggleAutoFollow() {
-      autoFollow = !autoFollow;
-      document.getElementById('btnAutoFollow').classList.toggle('active-mode', autoFollow);
-      if (autoFollow && dataPoints.length > 0) {
-        const latest = dataPoints[dataPoints.length - 1];
-        centerI = latest.i;
-        centerV = latest.v;
-        clampCenter();
-        renderGraph();
-      }
-    }
-
-    function updateMaxSpan(val) {
+    function updateBaseMaxV(val) {
       const parsed = parseFloat(val);
       if (!Number.isNaN(parsed) && parsed >= 0.5 && parsed <= 100) {
-        baseSpan = parsed;
-        clampCenter();
+        baseMaxV = parsed;
         renderGraph();
       }
     }
@@ -473,7 +436,7 @@
     function syncCanvasSize() {
       const dpr = window.devicePixelRatio || 1;
       const w = wrapper.clientWidth || 360;
-      const h = wrapper.clientHeight || 320;
+      const h = wrapper.clientHeight || 340;
       if (canvas.width !== Math.floor(w * dpr) || canvas.height !== Math.floor(h * dpr)) {
         canvas.width = Math.floor(w * dpr);
         canvas.height = Math.floor(h * dpr);
@@ -492,56 +455,29 @@
       const gw = Math.max(10, w - padL - padR);
       const gh = Math.max(10, h - padT - padB);
 
-      // Equal pixel-per-unit scale across both X (Current) and Y (Voltage)
-      // so a 1:1 unit change on both axes produces a true geometric 45-degree angle.
-      const visibleSpan = baseSpan / zoomLevel;
-      const pxPerUnit = Math.min(gw / visibleSpan, gh / visibleSpan);
+      // Origin is strictly (0, 0).
+      // Y goes from 0 to maxV across full height gh.
+      // X goes from 0 to maxI across full width gw using the IDENTICAL pxPerUnit scale,
+      // guaranteeing a true 45-degree y = x line while filling the entire wide canvas.
+      const maxV = baseMaxV / zoomLevel;
+      const pxPerUnit = gh / maxV;
+      const maxI = gw / pxPerUnit;
 
-      const minI = centerI - visibleSpan / 2;
-      const maxI = centerI + visibleSpan / 2;
-      const minV = centerV - visibleSpan / 2;
-      const maxV = centerV + visibleSpan / 2;
-
-      return { dpr, w, h, padL, padR, padT, padB, gw, gh, visibleSpan, pxPerUnit, minI, maxI, minV, maxV };
-    }
-
-    function clampCenter() {
-      const half = (baseSpan / zoomLevel) / 2;
-      if (half * 2 >= baseSpan) {
-        centerI = baseSpan / 2;
-        centerV = baseSpan / 2;
-        return;
-      }
-      centerI = Math.min(baseSpan - half, Math.max(half, centerI));
-      centerV = Math.min(baseSpan - half, Math.max(half, centerV));
+      return { dpr, w, h, padL, padR, padT, padB, gw, gh, pxPerUnit, maxI, maxV };
     }
 
     function updateZoomDisplay() {
       zoomLabel.textContent = `${zoomLevel.toFixed(1)}x`;
     }
 
-    function zoomGraph(factor, anchorI = null, anchorV = null) {
-      const nextZoom = Math.min(MAX_ZOOM, Math.max(MIN_ZOOM, zoomLevel * factor));
-      if (anchorI !== null && anchorV !== null) {
-        const ratio = nextZoom / zoomLevel;
-        centerI = anchorI + (centerI - anchorI) / ratio;
-        centerV = anchorV + (centerV - anchorV) / ratio;
-      }
-      zoomLevel = nextZoom;
-      if (zoomLevel === MIN_ZOOM) {
-        centerI = baseSpan / 2;
-        centerV = baseSpan / 2;
-      } else {
-        clampCenter();
-      }
+    function zoomGraph(factor) {
+      zoomLevel = Math.min(MAX_ZOOM, Math.max(MIN_ZOOM, zoomLevel * factor));
       updateZoomDisplay();
       renderGraph();
     }
 
     function resetZoom() {
       zoomLevel = MIN_ZOOM;
-      centerI = baseSpan / 2;
-      centerV = baseSpan / 2;
       updateZoomDisplay();
       renderGraph();
     }
@@ -561,7 +497,6 @@
       syncCanvasSize();
       updateUI();
       updateZoomDisplay();
-      setInteractMode('pan');
       renderGraph();
       autoConnect();
 
@@ -667,17 +602,12 @@
         ? Math.min(...conducting.map(p => p.v)).toFixed(2)
         : '--';
 
-      // Auto-expand baseSpan if incoming data exceeds current span
-      const maxVal = Math.max(v, i);
-      if (maxVal > baseSpan * 0.9) {
-        baseSpan = Math.ceil(maxVal * 1.25 * 2) / 2;
-        document.getElementById('inputMaxSpan').value = baseSpan.toFixed(1);
-      }
-
-      if (autoFollow) {
-        centerI = i;
-        centerV = v;
-        clampCenter();
+      // Auto-expand Y-max if data approaches top or right boundary while keeping 1:1 scale
+      const { gw, gh } = getPlotMetrics();
+      const requiredMaxV = Math.max(v, i * (gh / gw));
+      if (requiredMaxV > baseMaxV * 0.9) {
+        baseMaxV = Math.ceil(requiredMaxV * 1.2 * 2) / 2;
+        document.getElementById('inputMaxV').value = baseMaxV.toFixed(1);
       }
 
       updateUI();
@@ -718,7 +648,7 @@
       }
 
       graphSubtitle.textContent = hasReadings
-        ? `X = Current I (mA), Y = Voltage V_LED (V) · Equal scale · ${dataPoints.length} point(s)`
+        ? `Origin (0, 0) · X = Current I (mA), Y = Voltage V_LED (V) · ${dataPoints.length} point(s)`
         : 'No readings taken so far — connect hardware via USB/OTG to plot';
     }
 
@@ -739,7 +669,7 @@
         return;
       }
       const rows = [
-        '# de:volt LED I-V Characteristic Data (X = Current I, Y = Voltage V_LED)',
+        '# de:volt LED I-V Characteristic Data (Origin 0,0 | X = Current I, Y = Voltage V_LED)',
         '# PRADEEP S (2026303080) & VISHAL KARTHIK R P (2026303060)',
         'I_mA(mA),V_LED(V),Timestamp'
       ];
@@ -748,7 +678,7 @@
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = `devolt_LED_IV_45deg_${Date.now()}.csv`;
+      a.download = `devolt_LED_IV_origin_45deg_${Date.now()}.csv`;
       a.click();
       URL.revokeObjectURL(url);
     }
@@ -759,20 +689,22 @@
       const iVec = hasData ? sorted.map(p => p.i.toFixed(4)).join(', ') : '0.00, 1.00, 2.00, 3.00, 4.00, 5.00';
       const vVec = hasData ? sorted.map(p => p.v.toFixed(4)).join(', ') : '0.00, 1.00, 2.00, 3.00, 4.00, 5.00';
 
-      return `% de:volt // LED I-V Characteristic Plotter (X = Current, Y = Voltage, 45-deg equal axes)
+      return `% de:volt // LED I-V Characteristic Plotter (Origin 0,0 | Exact y = x 45-deg)
 % Authors: PRADEEP S (2026303080) & VISHAL KARTHIK R P (2026303060)
 
 I_mA  = [${iVec}]; % X-axis: Forward Current (mA)
 V_LED = [${vVec}]; % Y-axis: Voltage across LED (V)
 
-figure('Name', 'de:volt 45-deg I-V Plot');
+figure('Name', 'de:volt Origin 45-deg I-V Plot');
 plot(I_mA, V_LED, '-o', 'LineWidth', 1.25);
 hold on;
-axis equal; % Equal units on X and Y so slope = 1 is an exact 45-degree line
+xlim([0 inf]);
+ylim([0 inf]);
+daspect([1 1 1]); % Equal data units along X and Y so y = x is strictly 45 degrees
 grid on;
 xlabel('Current I (mA)', 'FontWeight', 'bold');
 ylabel('LED Voltage V_{LED} (V)', 'FontWeight', 'bold');
-title('LED I–V Characteristic (45° Equal-Scale Axes)', 'FontWeight', 'bold');`;
+title('LED I–V Characteristic (Origin 0,0 · 45° y = x Slope)', 'FontWeight', 'bold');`;
     }
 
     function openOtgHelp() { document.getElementById('otgModal').classList.remove('hidden'); }
@@ -781,7 +713,7 @@ title('LED I–V Characteristic (45° Equal-Scale Axes)', 'FontWeight', 'bold');
     function openMatlabModal() {
       const hasData = dataPoints.length > 0;
       document.getElementById('matlabNote').textContent = hasData
-        ? `Embedded ${dataPoints.length} reading(s) (X = I, Y = V_LED) with axis equal.`
+        ? `Embedded ${dataPoints.length} reading(s) (X = I, Y = V_LED) anchored at (0,0).`
         : 'No readings taken so far — using sample arrays until hardware data is captured.';
       document.getElementById('matlabCodeBlock').textContent = buildMatlabCode();
       document.getElementById('matlabModal').classList.remove('hidden');
@@ -795,7 +727,7 @@ title('LED I–V Characteristic (45° Equal-Scale Axes)', 'FontWeight', 'bold');
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = 'devolt_led_iv_45deg.m';
+      a.download = 'devolt_led_iv_origin_45deg.m';
       a.click();
       URL.revokeObjectURL(url);
     }
@@ -829,89 +761,94 @@ title('LED I–V Characteristic (45° Equal-Scale Axes)', 'FontWeight', 'bold');
 
     function renderGraph() {
       syncCanvasSize();
-      const { dpr, w, h, padL, padT, gw, gh, visibleSpan, pxPerUnit, minI, maxI, minV, maxV } = getPlotMetrics();
+      const { dpr, w, h, padL, padT, gw, gh, pxPerUnit, maxI, maxV } = getPlotMetrics();
       ctx.clearRect(0, 0, w, h);
 
       ctx.fillStyle = cssVar('--canvas-bg');
       ctx.fillRect(0, 0, w, h);
 
-      const mapX = i => padL + (i - minI) * pxPerUnit;
-      const mapY = v => padT + gh - (v - minV) * pxPerUnit;
+      // Origin (0, 0) is fixed at bottom-left of the full-width plot rectangle: (padL, padT + gh)
+      const originX = padL;
+      const originY = padT + gh;
+      const mapX = i => originX + i * pxPerUnit;
+      const mapY = v => originY - v * pxPerUnit;
 
-      const plotW = visibleSpan * pxPerUnit;
-      const plotH = visibleSpan * pxPerUnit;
-
-      // Gridlines with equal step size on both axes
-      const step = visibleSpan / gridDivisions;
-      const firstI = Math.floor(minI / step) * step;
-      const firstV = Math.floor(minV / step) * step;
+      // Uniform square grid cells across the entire full-width rectangular canvas
+      const step = maxV / gridDivisions;
 
       ctx.strokeStyle = cssVar('--plot-grid');
       ctx.lineWidth = 1 * dpr;
       ctx.font = `${11 * dpr}px "JetBrains Mono", monospace`;
       ctx.fillStyle = cssVar('--text-muted');
 
-      // Vertical gridlines (X = Current I)
-      for (let val = firstI; val <= maxI + step * 0.001; val += step) {
-        if (val < minI - step * 0.001) continue;
-        const gx = mapX(val);
+      // Vertical gridlines starting from X = 0 across full width gw
+      for (let iVal = 0; iVal <= maxI + step * 0.001; iVal += step) {
+        const gx = mapX(iVal);
+        if (gx > padL + gw + 1) break;
         ctx.beginPath();
-        ctx.moveTo(gx, padT + gh);
-        ctx.lineTo(gx, padT + gh - plotH);
+        ctx.moveTo(gx, originY);
+        ctx.lineTo(gx, padT);
         ctx.stroke();
 
         ctx.textAlign = 'center';
         ctx.textBaseline = 'top';
-        ctx.fillText(val.toFixed(2), gx, padT + gh + 8 * dpr);
+        ctx.fillText(iVal === 0 ? '0' : iVal.toFixed(2), gx, originY + 8 * dpr);
       }
 
-      // Horizontal gridlines (Y = Voltage V_LED)
-      for (let val = firstV; val <= maxV + step * 0.001; val += step) {
-        if (val < minV - step * 0.001) continue;
-        const gy = mapY(val);
+      // Horizontal gridlines starting from Y = 0 up full height gh
+      for (let vVal = 0; vVal <= maxV + step * 0.001; vVal += step) {
+        const gy = mapY(vVal);
+        if (gy < padT - 1) break;
         ctx.beginPath();
-        ctx.moveTo(padL, gy);
-        ctx.lineTo(padL + plotW, gy);
+        ctx.moveTo(originX, gy);
+        ctx.lineTo(padL + gw, gy);
         ctx.stroke();
 
-        ctx.textAlign = 'right';
-        ctx.textBaseline = 'middle';
-        ctx.fillText(val.toFixed(2), padL - 8 * dpr, gy);
+        if (vVal > 0) {
+          ctx.textAlign = 'right';
+          ctx.textBaseline = 'middle';
+          ctx.fillText(vVal.toFixed(2), originX - 8 * dpr, gy);
+        }
       }
 
-      // Equal-scale frame (exact 1:1 aspect square so diagonal is 45 deg)
+      // Full-Width Rectangular Plot Frame
       ctx.strokeStyle = cssVar('--plot-axis');
       ctx.lineWidth = 1.5 * dpr;
-      ctx.strokeRect(padL, padT + gh - plotH, plotW, plotH);
+      ctx.strokeRect(padL, padT, gw, gh);
 
-      // Axis Labels: X = Current (mA), Y = Voltage (V)
+      // Origin (0,0) highlight dot
+      ctx.fillStyle = cssVar('--volt-purple');
+      ctx.beginPath();
+      ctx.arc(originX, originY, 3.5 * dpr, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Axis Labels
       ctx.fillStyle = cssVar('--text-main');
       ctx.font = `600 ${12 * dpr}px "Space Grotesk", sans-serif`;
       ctx.textAlign = 'center';
-      ctx.fillText('Forward Current I (mA)  [X-Axis]', padL + plotW / 2, h - 14 * dpr);
+      ctx.fillText('Forward Current I (mA)  [X-Axis]', padL + gw / 2, h - 14 * dpr);
 
       ctx.save();
-      ctx.translate(16 * dpr, padT + gh - plotH / 2);
+      ctx.translate(16 * dpr, padT + gh / 2);
       ctx.rotate(-Math.PI / 2);
       ctx.fillText('LED Voltage V_LED (V)  [Y-Axis]', 0, 0);
       ctx.restore();
 
-      // Clip inside equal-aspect plot square
+      // Clip inside full-width plot rectangle
       ctx.save();
       ctx.beginPath();
-      ctx.rect(padL, padT + gh - plotH, plotW, plotH);
+      ctx.rect(padL, padT, gw, gh);
       ctx.clip();
 
-      // Exact 45-degree reference line (V = I across equal units)
+      // Exact 45-degree y = x ray starting from Origin (0, 0)
       if (showDiagGuide) {
-        const startDiag = Math.min(minI, minV);
-        const endDiag = Math.max(maxI, maxV);
+        const diagEnd = Math.min(maxI, maxV);
         ctx.strokeStyle = cssVar('--plot-ref');
-        ctx.setLineDash([5 * dpr, 5 * dpr]);
-        ctx.lineWidth = 1.2 * dpr;
+        ctx.setLineDash([6 * dpr, 5 * dpr]);
+        ctx.lineWidth = 1.3 * dpr;
         ctx.beginPath();
-        ctx.moveTo(mapX(startDiag), mapY(startDiag));
-        ctx.lineTo(mapX(endDiag), mapY(endDiag));
+        ctx.moveTo(mapX(0), mapY(0));
+        ctx.lineTo(mapX(diagEnd), mapY(diagEnd));
         ctx.stroke();
         ctx.setLineDash([]);
       }
@@ -920,15 +857,13 @@ title('LED I–V Characteristic (45° Equal-Scale Axes)', 'FontWeight', 'bold');
       if (dataPoints.length > 0) {
         const sorted = [...dataPoints].sort((a, b) => a.i - b.i);
 
-        // 1.25px trace: X = pt.i, Y = pt.v
+        // Trace starts from Origin (0, 0) through plotted points
         ctx.strokeStyle = lineColor;
         ctx.lineWidth = 1.25 * dpr;
         ctx.beginPath();
-        sorted.forEach((pt, idx) => {
-          const px = mapX(pt.i);
-          const py = mapY(pt.v);
-          if (idx === 0) ctx.moveTo(px, py);
-          else ctx.lineTo(px, py);
+        ctx.moveTo(mapX(0), mapY(0));
+        sorted.forEach((pt) => {
+          ctx.lineTo(mapX(pt.i), mapY(pt.v));
         });
         ctx.stroke();
 
@@ -947,50 +882,11 @@ title('LED I–V Characteristic (45° Equal-Scale Axes)', 'FontWeight', 'bold');
         ctx.font = `500 ${12.5 * dpr}px "JetBrains Mono", monospace`;
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
-        ctx.fillText('AWAITING SERIAL DATA (V_LED,I_mA) · X=I, Y=V', padL + plotW / 2, padT + gh - plotH / 2);
-      }
-
-      // Draw selection box when Box Zoom is dragged
-      if (isDragging && interactMode === 'box' && dragStartPx && dragCurrPx) {
-        const bx = Math.min(dragStartPx.x, dragCurrPx.x);
-        const by = Math.min(dragStartPx.y, dragCurrPx.y);
-        const bw = Math.abs(dragCurrPx.x - dragStartPx.x);
-        const bh = Math.abs(dragCurrPx.y - dragStartPx.y);
-        ctx.fillStyle = 'rgba(147, 51, 234, 0.14)';
-        ctx.strokeStyle = '#9333EA';
-        ctx.lineWidth = 1.2 * dpr;
-        ctx.fillRect(bx, by, bw, bh);
-        ctx.strokeRect(bx, by, bw, bh);
+        ctx.fillText('ORIGIN (0,0) · AWAITING SERIAL DATA (V_LED,I_mA)', padL + gw / 2, padT + gh / 2);
       }
 
       ctx.restore();
     }
-
-    function pxToData(mx, my) {
-      const { padL, padT, gh, pxPerUnit, minI, minV } = getPlotMetrics();
-      const iVal = minI + (mx - padL) / pxPerUnit;
-      const vVal = minV + (padT + gh - my) / pxPerUnit;
-      return { iVal, vVal };
-    }
-
-    canvas.addEventListener('mousedown', (e) => {
-      const rect = canvas.getBoundingClientRect();
-      const dpr = window.devicePixelRatio || 1;
-      const mx = (e.clientX - rect.left) * dpr;
-      const my = (e.clientY - rect.top) * dpr;
-
-      isDragging = true;
-      dragStartPx = { x: mx, y: my };
-      dragCurrPx = { x: mx, y: my };
-      panStartCenterI = centerI;
-      panStartCenterV = centerV;
-
-      if (interactMode === 'pan') {
-        autoFollow = false;
-        document.getElementById('btnAutoFollow').classList.remove('active-mode');
-        canvas.style.cursor = 'grabbing';
-      }
-    });
 
     canvas.addEventListener('mousemove', (e) => {
       const rect = canvas.getBoundingClientRect();
@@ -998,31 +894,18 @@ title('LED I–V Characteristic (45° Equal-Scale Axes)', 'FontWeight', 'bold');
       const mx = (e.clientX - rect.left) * dpr;
       const my = (e.clientY - rect.top) * dpr;
 
-      const { iVal, vVal } = pxToData(mx, my);
+      const { padL, padT, gh, pxPerUnit } = getPlotMetrics();
+      const iVal = Math.max(0, (mx - padL) / pxPerUnit);
+      const vVal = Math.max(0, (padT + gh - my) / pxPerUnit);
       cursorReadout.textContent = `Cursor: I = ${iVal.toFixed(2)} mA, V = ${vVal.toFixed(2)} V`;
-
-      if (isDragging) {
-        dragCurrPx = { x: mx, y: my };
-        if (interactMode === 'pan') {
-          const { pxPerUnit } = getPlotMetrics();
-          const dI = (mx - dragStartPx.x) / pxPerUnit;
-          const dV = (my - dragStartPx.y) / pxPerUnit;
-          centerI = panStartCenterI - dI;
-          centerV = panStartCenterV + dV;
-          clampCenter();
-        }
-        renderGraph();
-        return;
-      }
 
       if (dataPoints.length === 0) {
         tooltip.classList.add('hidden');
         return;
       }
 
-      const { padL, padT, gh, pxPerUnit, minI, minV } = getPlotMetrics();
-      const mapX = i => padL + (i - minI) * pxPerUnit;
-      const mapY = v => padT + gh - (v - minV) * pxPerUnit;
+      const mapX = i => padL + i * pxPerUnit;
+      const mapY = v => padT + gh - v * pxPerUnit;
 
       let closest = null;
       let minDist = 24 * dpr;
@@ -1044,49 +927,13 @@ title('LED I–V Characteristic (45° Equal-Scale Axes)', 'FontWeight', 'bold');
       }
     });
 
-    window.addEventListener('mouseup', () => {
-      if (!isDragging) return;
-      isDragging = false;
-      canvas.style.cursor = interactMode === 'pan' ? 'grab' : 'crosshair';
-
-      if (interactMode === 'box' && dragStartPx && dragCurrPx) {
-        const dx = Math.abs(dragCurrPx.x - dragStartPx.x);
-        const dy = Math.abs(dragCurrPx.y - dragStartPx.y);
-        if (dx > 12 && dy > 12) {
-          const a = pxToData(dragStartPx.x, dragStartPx.y);
-          const b = pxToData(dragCurrPx.x, dragCurrPx.y);
-          const boxSpan = Math.max(Math.abs(a.iVal - b.iVal), Math.abs(a.vVal - b.vVal), 0.1);
-          centerI = (a.iVal + b.iVal) / 2;
-          centerV = (a.vVal + b.vVal) / 2;
-          zoomLevel = Math.min(MAX_ZOOM, Math.max(MIN_ZOOM, baseSpan / boxSpan));
-          autoFollow = false;
-          document.getElementById('btnAutoFollow').classList.remove('active-mode');
-          clampCenter();
-          updateZoomDisplay();
-        }
-      }
-
-      dragStartPx = null;
-      dragCurrPx = null;
-      renderGraph();
-    });
-
     canvas.addEventListener('mouseleave', () => tooltip.classList.add('hidden'));
 
-    canvas.addEventListener('dblclick', () => {
-      resetZoom();
-    });
+    canvas.addEventListener('dblclick', () => resetZoom());
 
     canvas.addEventListener('wheel', (e) => {
       e.preventDefault();
-      const rect = canvas.getBoundingClientRect();
-      const dpr = window.devicePixelRatio || 1;
-      const mx = (e.clientX - rect.left) * dpr;
-      const my = (e.clientY - rect.top) * dpr;
-      const { iVal, vVal } = pxToData(mx, my);
-      autoFollow = false;
-      document.getElementById('btnAutoFollow').classList.remove('active-mode');
-      zoomGraph(e.deltaY < 0 ? 1.2 : 0.85, iVal, vVal);
+      zoomGraph(e.deltaY < 0 ? 1.2 : 0.85);
     }, { passive: false });
   </script>
 </body>
